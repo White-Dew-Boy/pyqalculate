@@ -383,8 +383,9 @@ ul ul, ol ol, ul ol, ol ul { margin: 2px 0; }
       <li class="toc-h2"><a href="#ch5-4b5-代数函数-8-个">4b.5 代数函数 (8 个)</a></li>
       <li class="toc-h2"><a href="#ch5-4b6-微积分函数-6-个">4b.6 微积分函数 (6 个)</a></li>
       <li class="toc-h2"><a href="#ch5-4b7-矩阵向量函数-15-个">4b.7 矩阵/向量函数 (15 个)</a></li>
-      <li class="toc-h2"><a href="#ch5-4b8-统计函数-13-个">4b.8 统计函数 (13 个)</a></li>
-      <li class="toc-h2"><a href="#ch5-4b9-进制转换函数-8-个">4b.9 进制转换函数 (8 个)</a></li>
+<li class="toc-h2"><a href="#ch5-4b8-统计函数-13-个">4b.8 统计函数 (13 个)</a></li>
+<li class="toc-h2"><a href="#ch5-4b8a-回归函数-3-个">4b.8a 回归函数 (3 个)</a></li>
+<li class="toc-h2"><a href="#ch5-4b9-进制转换函数-8-个">4b.9 进制转换函数 (8 个)</a></li>
       <li class="toc-h2"><a href="#ch5-4b10-日期时间函数-10-个">4b.10 日期时间函数 (10 个)</a></li>
       <li class="toc-h2"><a href="#ch5-4b11-特殊函数-12-个">4b.11 特殊函数 (12 个)</a></li>
       <li class="toc-h2"><a href="#ch5-4b12-逻辑位运算函数-9-个">4b.12 逻辑/位运算函数 (9 个)</a></li>
@@ -487,8 +488,9 @@ ul ul, ol ol, ul ol, ol ul { margin: 2px 0; }
       <li class="toc-h2"><a href="#ch8-56-主题系统">5.6 主题系统</a></li>
       <li class="toc-h2"><a href="#ch8-57-对话框">5.7 对话框</a></li>
       <li class="toc-h3"><a href="#ch8-preferences-设置对话框">Preferences — 设置对话框</a></li>
-      <li class="toc-h3"><a href="#ch8-plot-绘图对话框">Plot — 绘图对话框</a></li>
-      <li class="toc-h3"><a href="#ch8-number-bases-进制转换对话框">Number Bases — 进制转换对话框</a></li>
+<li class="toc-h3"><a href="#ch8-plot-绘图对话框">Plot — 绘图对话框</a></li>
+<li class="toc-h3"><a href="#ch8-curve-fitting-曲线拟合对话框">Curve Fitting — 曲线拟合对话框</a></li>
+<li class="toc-h3"><a href="#ch8-number-bases-进制转换对话框">Number Bases — 进制转换对话框</a></li>
       <li class="toc-h3"><a href="#ch8-functions-list-函数列表对话框">Functions List — 函数列表对话框</a></li>
       <li class="toc-h3"><a href="#ch8-importexport-csv-csv-导入导出">Import/Export CSV — CSV 导入/导出</a></li>
       <li class="toc-h2"><a href="#ch8-58-自动补全">5.8 自动补全</a></li>
@@ -631,7 +633,7 @@ ul ul, ol ol, ul ol, ol ul { margin: 2px 0; }
 <li>任意精度数学运算（通过 gmpy2/mpmath）[来源: pyproject.toml:30]</li>
 <li>单位转换（500+ 单位，支持前缀、复合单位）[来源: pyqalculate_data/units.json]</li>
 <li>符号计算（通过 SymPy）[来源: pyproject.toml:29]</li>
-<li>156+ 内置数学函数 [来源: pyqalculate/builtin_functions.py:3487-3713]</li>
+<li>159+ 内置数学函数 [来源: pyqalculate/builtin_functions.py:3487-3800]</li>
 <li>进制转换（二进制/八进制/十六进制/任意进制/罗马数字）[来源: builtin_functions.py:2455-2676]</li>
 <li>日期时间运算 [来源: builtin_functions.py:2684-2838]</li>
 <li>函数绘图（通过 matplotlib）[来源: pyqalculate/plot.py]</li>
@@ -731,7 +733,7 @@ ul ul, ol ol, ul ol, ol ul { margin: 2px 0; }
 ├── pyqalculate/           # 核心库（14 个 Python 模块）
 │   ├── __init__.py         # 公共 API：导出 Calculator
 │   ├── calculator.py       # 主 Calculator 类（~2500 行）
-│   ├── builtin_functions.py # 156 个内置数学函数（3713 行）
+│   ├── builtin_functions.py # 159 个内置数学函数（~4100 行）
 │   ├── parser.py           # 表达式解析器（1118 行）
 │   ├── math_structure.py   # MathStructure AST 节点（2482 行）
 │   ├── number.py           # Number 类（有理数/浮点/复数）
@@ -3606,6 +3608,46 @@ x + 1 where x = 5
 </tbody>
 </table>
 <p>[来源: builtin_functions.py:2195-2447]</p>
+<hr />
+<h2 id="ch5-4b8a-回归函数-3-个">4b.8a 回归函数 (3 个)</h2>
+<p><code>linearfit</code>、<code>quadraticfit</code>、<code>cubicfit</code> 提供最小二乘多项式曲线拟合。所有函数接受向量参数，返回以 x 表示的多项式。</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>说明</th>
+<th>示例</th>
+<th>最少数据点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>linearfit(x, y)</code></td>
+<td>线性回归</td>
+<td><code>linearfit([1,2,3], [2,4,6])</code> → <code>2*x</code></td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>quadraticfit(x, y)</code></td>
+<td>二次回归</td>
+<td><code>quadraticfit([5,3,4,5,6,7,13,24])</code> → <code>0.78*x² - 4.72*x + 9.73</code></td>
+<td>3</td>
+</tr>
+<tr>
+<td><code>cubicfit(x, y)</code></td>
+<td>三次回归</td>
+<td><code>cubicfit([5,3,4,5,6,7,13,24])</code> → <code>0.149*x³ - 1.23*x² + 2.95*x + 2.36</code></td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<p><strong>使用方式</strong>:</p>
+<ul>
+<li>单参数：<code>linearfit([y1, y2, ...])</code> — x 自动取 1, 2, ..., n</li>
+<li>双参数：<code>linearfit([x1, x2, ...], [y1, y2, ...])</code> — 显式指定 x 和 y</li>
+<li>点数不足或不等长时返回 <code>undefined</code></li>
+</ul>
+<p>[来源: builtin_functions.py:3700-3800]</p>
 <hr />
 <h2 id="ch5-4b9-进制转换函数-8-个">4b.9 进制转换函数 (8 个)</h2>
 <table>
@@ -6770,6 +6812,10 @@ start.bat → 选择 [2]
 <td>打开绘图对话框</td>
 </tr>
 <tr>
+<td>Curve Fitting...</td>
+<td>打开曲线拟合对话框</td>
+</tr>
+<tr>
 <td>Number Bases...</td>
 <td>打开进制转换</td>
 </tr>
@@ -6985,6 +7031,18 @@ start.bat → 选择 [2]
 <li>支持多表达式（10 色调色板）[来源: plot_dialog.py:25-28]</li>
 <li>保存为 PNG 或 SVG [来源: plot_dialog.py:491-537]</li>
 </ul>
+<h3 id="ch8-curve-fitting-曲线拟合对话框">Curve Fitting — 曲线拟合对话框</h3>
+<p><strong>菜单路径</strong>: Tools → Curve Fitting...</p>
+<p><strong>功能</strong>: 输入 X/Y 数据点，选择拟合类型（线性/二次/三次），计算并可视化回归结果。</p>
+<p><strong>使用步骤</strong>:</p>
+<ol>
+<li>在 X values / Y values 输入框中输入数据（逗号或空格分隔）</li>
+<li>选择拟合类型（Linear / Quadratic / Cubic）</li>
+<li>点击 <strong>Fit</strong> 按钮</li>
+<li>查看多项式表达式和 matplotlib 图表（散点 + 拟合曲线）</li>
+<li>可选：点击 <strong>Insert to Expression</strong> 将结果插入主窗口</li>
+</ol>
+<p><strong>结果格式</strong>: 返回以 x 表示的多项式，例如 <code>0.7797619*(x)^2 - 4.7202381*x + 9.7321429</code></p>
 <h3 id="ch8-number-bases-进制转换对话框">Number Bases — 进制转换对话框</h3>
 <p>同时显示六种进制 [来源: dialogs/number_bases.py:31-225]:</p>
 <ul>
@@ -10078,7 +10136,7 @@ def test_trig_function(calc):
 <tr>
 <td>内置函数</td>
 <td><a href="#ch5">04b 函数</a></td>
-<td>156+ 函数分类</td>
+<td>159+ 函数分类</td>
 </tr>
 <tr>
 <td>已知限制</td>

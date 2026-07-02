@@ -254,7 +254,7 @@
 
 ---
 
-## 4b.13 工具函数 (16 个)
+## 4b.13 工具函数 (19 个)
 
 | 函数 | 语法 | 说明 | 示例 | 结果 |
 |------|------|------|------|------|
@@ -272,6 +272,9 @@
 | `is_rational(x)` | `is_rational(x)` | 是否为有理数 | — | — |
 | `is_integer(x)` | `is_integer(x)` | 是否为整数 | — | — |
 | `odd(n)` / `even(n)` | `odd(n)` / `even(n)` | 奇偶性 | — | — |
+| `linearfit(x, y)` | `linearfit(x, y)` | 线性回归 | ≥2 点 | 返回多项式表达式 |
+| `quadraticfit(x, y)` | `quadraticfit(x, y)` | 二次回归 | ≥3 点 | 返回多项式表达式 |
+| `cubicfit(x, y)` | `cubicfit(x, y)` | 三次回归 | ≥4 点 | 返回多项式表达式 |
 | `plot(expr, file)` | `plot(expr, file)` | 绘图 | — | — |
 
 [来源: builtin_functions.py:3176-3479]

@@ -7,7 +7,7 @@
 
 ## 7.1 函数概览
 
-PyQalculate 提供 **156+** 内置数学函数，注册在 `FunctionRegistry` 中 [来源: builtin_functions.py:3487-3713]
+PyQalculate 提供 **159+** 内置数学函数，注册在 `FunctionRegistry` 中 [来源: builtin_functions.py:3487-3800]
 
 ---
 
@@ -184,7 +184,26 @@ PyQalculate 提供 **156+** 内置数学函数，注册在 `FunctionRegistry` �
 
 ---
 
-## 7.10 进制转换函数 (8 个)
+## 7.10 回归函数 (3 个)
+
+[来源: builtin_functions.py:3700-3800]
+
+`linearfit`、`quadraticfit`、`cubicfit` 提供最小二乘多项式曲线拟合。所有函数接受向量参数，返回以 x 表示的多项式。
+
+| 函数 | 说明 | 示例 | 最少数据点 |
+|------|------|------|------------|
+| `linearfit(x, y)` | 线性回归 | `linearfit([1,2,3], [2,4,6])` → `2*x` | 2 |
+| `quadraticfit(x, y)` | 二次回归 | `quadraticfit([5,3,4,5,6,7,13,24])` → `0.78*x² - 4.72*x + 9.73` | 3 |
+| `cubicfit(x, y)` | 三次回归 | `cubicfit([5,3,4,5,6,7,13,24])` → `0.149*x³ - 1.23*x² + 2.95*x + 2.36` | 4 |
+
+**使用方式**:
+- 单参数：`linearfit([y1, y2, ...])` — x 自动取 1, 2, ..., n
+- 双参数：`linearfit([x1, x2, ...], [y1, y2, ...])` — 显式指定 x 和 y
+- 点数不足或不等长时返回 `undefined`
+
+---
+
+## 7.11 进制转换函数 (8 个)
 
 [来源: builtin_functions.py:2455-2676]
 
@@ -201,7 +220,7 @@ PyQalculate 提供 **156+** 内置数学函数，注册在 `FunctionRegistry` �
 
 ---
 
-## 7.11 日期时间函数 (10 个)
+## 7.12 日期时间函数 (10 个)
 
 [来源: builtin_functions.py:2684-2838]
 
@@ -220,7 +239,7 @@ PyQalculate 提供 **156+** 内置数学函数，注册在 `FunctionRegistry` �
 
 ---
 
-## 7.12 特殊函数 (12 个)
+## 7.13 特殊函数 (12 个)
 
 [来源: builtin_functions.py:2840-3037]
 
@@ -241,7 +260,7 @@ PyQalculate 提供 **156+** 内置数学函数，注册在 `FunctionRegistry` �
 
 ---
 
-## 7.13 逻辑/位运算函数 (9 个)
+## 7.14 逻辑/位运算函数 (9 个)
 
 [来源: builtin_functions.py:3040-3173]
 
@@ -259,7 +278,7 @@ PyQalculate 提供 **156+** 内置数学函数，注册在 `FunctionRegistry` �
 
 ---
 
-## 7.14 工具函数 (14 个)
+## 7.15 工具函数 (14 个)
 
 [来源: builtin_functions.py:3176-3479]
 

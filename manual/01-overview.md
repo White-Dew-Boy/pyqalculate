@@ -13,7 +13,7 @@ PyQalculate 是 [libqalculate](https://github.com/Qalculate/libqalculate) 的纯
 - 任意精度数学运算（通过 gmpy2/mpmath）[来源: pyproject.toml:30]
 - 单位转换（500+ 单位，支持前缀、复合单位）[来源: pyqalculate_data/units.json]
 - 符号计算（通过 SymPy）[来源: pyproject.toml:29]
-- 156+ 内置数学函数 [来源: pyqalculate/builtin_functions.py:3487-3713]
+- 159+ 内置数学函数 [来源: pyqalculate/builtin_functions.py:3487-3800]
 - 进制转换（二进制/八进制/十六进制/任意进制/罗马数字）[来源: builtin_functions.py:2455-2676]
 - 日期时间运算 [来源: builtin_functions.py:2684-2838]
 - 函数绘图（通过 matplotlib）[来源: pyqalculate/plot.py]
@@ -61,7 +61,7 @@ pyqalculate/
 ├── pyqalculate/           # 核心库（16 个 Python 模块）
 │   ├── __init__.py         # 公共 API：导出 Calculator
 │   ├── calculator.py       # 主 Calculator 类（2530 行）
-│   ├── builtin_functions.py # 156 个内置数学函数（3817 行）
+│   ├── builtin_functions.py # 159 个内置数学函数（~4100 行）
 │   ├── parser.py           # 表达式解析器（1118 行）
 │   ├── math_structure.py   # MathStructure AST 节点（2600 行）
 │   ├── number.py           # Number 类（有理数/浮点/复数）

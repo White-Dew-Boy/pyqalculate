@@ -161,11 +161,12 @@ root (tk.Tk)
 | 菜单项 | 功能 |
 |--------|------|
 | Plot... | 打开绘图对话框 |
+| Curve Fitting... | 打开曲线拟合对话框 |
 | Number Bases... | 打开进制转换 |
 | Unit Conversion... | 打开单位转换窗口 |
 | History... | 打开历史窗口 |
 
-[来源: menu_bar.py:82-88]
+[来源: menu_bar.py:82-92]
 
 ### Help 菜单
 
@@ -267,6 +268,21 @@ root (tk.Tk)
 - 右侧: matplotlib 画布 + 工具栏
 - 支持多表达式（10 色调色板）[来源: plot_dialog.py:25-28]
 - 保存为 PNG 或 SVG [来源: plot_dialog.py:491-537]
+
+### Curve Fitting — 曲线拟合对话框
+
+**菜单路径**: Tools → Curve Fitting...
+
+**功能**: 输入 X/Y 数据点，选择拟合类型（线性/二次/三次），计算并可视化回归结果。
+
+**使用步骤**:
+1. 在 X values / Y values 输入框中输入数据（逗号或空格分隔）
+2. 选择拟合类型（Linear / Quadratic / Cubic）
+3. 点击 **Fit** 按钮
+4. 查看多项式表达式和 matplotlib 图表（散点 + 拟合曲线）
+5. 可选：点击 **Insert to Expression** 将结果插入主窗口
+
+**结果格式**: 返回以 x 表示的多项式，例如 `0.7797619*(x)^2 - 4.7202381*x + 9.7321429`
 
 ### Number Bases — 进制转换对话框
 
