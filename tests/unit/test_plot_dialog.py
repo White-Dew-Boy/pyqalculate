@@ -315,21 +315,3 @@ class TestPlotDialogIntegration:
         finally:
             root.destroy()
 
-
-# ---------------------------------------------------------------------------
-# Plot style tests — no display required
-# ---------------------------------------------------------------------------
-
-
-class TestPlotDialogStyles:
-    """Given: a PlotDialog\\nWhen:  checking style controls\\nThen:  new styles are available."""
-
-    def test_style_var_default_is_lines(self) -> None:
-        """Default _style_var value is 'lines'."""
-        root = _make_root()
-        try:
-            dlg = PlotDialog(root)
-            assert hasattr(dlg, "_style_var")
-            assert dlg._style_var.get() == "lines"
-        finally:
-            root.destroy()

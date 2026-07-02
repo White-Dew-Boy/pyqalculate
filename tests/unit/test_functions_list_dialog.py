@@ -26,7 +26,10 @@ HAS_DISPLAY = bool(
 
 def _make_root() -> tk.Tk:
     """Create a withdrawn Tk root for testing."""
-    root = tk.Tk()
+    try:
+        root = tk.Tk()
+    except tk.TclError:
+        pytest.skip("Tcl/Tk runtime not available (tcl_findLibrary)")
     root.withdraw()
     return root
 
