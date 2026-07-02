@@ -12,6 +12,7 @@ from pyqalculate_gui.event_bus import (
     EXPORT_XLSX,
     IMPORT_CSV,
     IMPORT_XLSX,
+    OPEN_CURVE_FITTING,
     OPEN_HELP_DOC,
     OPEN_HISTORY_WINDOW,
     OPEN_NUMBER_BASES,
@@ -87,6 +88,7 @@ class MenuBar:
         menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label=_("Tools"), menu=menu)
         menu.add_command(label=_("Plot..."), command=self._emit(OPEN_PLOT))
+        menu.add_command(label=_("Curve Fitting..."), command=self._emit(OPEN_CURVE_FITTING))
         menu.add_command(label=_("Number Bases..."), command=self._emit(OPEN_NUMBER_BASES))
         menu.add_command(label=_("Unit Conversion..."), command=self._emit(OPEN_UNIT_CONVERSION))
         menu.add_command(label=_("History..."), command=self._emit(OPEN_HISTORY_WINDOW))

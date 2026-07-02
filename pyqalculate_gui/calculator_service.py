@@ -54,6 +54,12 @@ class CalculatorService:
         if po is None:
             po = PrintOptions()
 
+        # Sync print-option approximate flag from evaluation mode so that
+        # rational numbers (e.g. 1/3 parsed as RATIONAL leaf) are displayed
+        # as decimals when approximation is enabled.
+        if eo.approximation == ApproximationMode.APPROXIMATE:
+            po.approximate = True
+
         try:
             result = self._calc.calculate_and_print(expression, 0, eo, po)
             return CalculationResult(

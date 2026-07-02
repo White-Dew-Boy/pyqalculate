@@ -689,6 +689,148 @@ class TestStatisticsFunctions:
 
 
 # ============================================================================
+# 8.5. REGRESSION
+# ============================================================================
+
+
+class TestRegressionFunctions:
+    """Test regression/curve-fitting functions.
+
+    Note: Vector-based regression tests use the function API directly
+    since the parser has limited support for vector literal evaluation.
+    """
+
+    def test_linearfit_y_only(self, calc):
+        """linearfit(y) — generate x = [1, 2, ..., n]."""
+        from pyqalculate.math_structure import MathStructure
+        y = MathStructure.vector(
+            MathStructure(1), MathStructure(2), MathStructure(3),
+            MathStructure(4), MathStructure(5),
+        )
+        func = calc.get_function("linearfit")
+        assert func is not None
+        result = func.calculate([y])
+        # Perfect y = x fit → slope=1, intercept=0 → result ≈ 1*x
+        assert not result.is_undefined(), f"Expected valid result, got undefined"
+        # Check that the expression contains the expected pattern
+        result_str = result.print()
+        assert "x" in result_str, f"Expected 'x' in result, got: {result_str}"
+
+    def test_linearfit_xy(self, calc):
+        """linearfit(x, y) — explicit x and y vectors."""
+        from pyqalculate.math_structure import MathStructure
+        x = MathStructure.vector(
+            MathStructure(1), MathStructure(2), MathStructure(3),
+        )
+        y = MathStructure.vector(
+            MathStructure(2), MathStructure(4), MathStructure(6),
+        )
+        func = calc.get_function("linearfit")
+        assert func is not None
+        result = func.calculate([x, y])
+        # y = 2*x → slope=2, intercept=0
+        assert not result.is_undefined(), f"Expected valid result, got undefined"
+        assert result.is_addition() or result.is_multiplication() or result.is_symbolic(), (
+            f"Expected symbolic expression, got type: {result.type_name()}"
+        )
+        result_str = result.print()
+        assert "2" in result_str, f"Expected slope 2 in result, got: {result_str}"
+
+    def test_linearfit_unequal(self, calc):
+        """linearfit(x, y) with unequal lengths → undefined."""
+        from pyqalculate.math_structure import MathStructure
+        x = MathStructure.vector(MathStructure(1), MathStructure(2))
+        y = MathStructure.vector(MathStructure(1))
+        func = calc.get_function("linearfit")
+        assert func is not None
+        result = func.calculate([x, y])
+        assert result.is_undefined(), "Expected undefined for unequal-length vectors"
+
+    def test_linearfit_empty(self, calc):
+        """linearfit([]) — empty vector → undefined."""
+        from pyqalculate.math_structure import MathStructure
+        v = MathStructure.vector()
+        func = calc.get_function("linearfit")
+        assert func is not None
+        result = func.calculate([v])
+        assert result.is_undefined(), "Expected undefined for empty vector"
+
+    def test_quadraticfit_upstream(self, calc):
+        """quadraticfit([5,3,4,5,6,7,13,24]) matches upstream reference."""
+        from pyqalculate.math_structure import MathStructure
+        y = MathStructure.vector(
+            MathStructure(5), MathStructure(3), MathStructure(4),
+            MathStructure(5), MathStructure(6), MathStructure(7),
+            MathStructure(13), MathStructure(24),
+        )
+        func = calc.get_function("quadraticfit")
+        assert func is not None
+        result = func.calculate([y])
+        assert not result.is_undefined(), f"Expected valid result, got undefined"
+        result_str = result.print()
+        assert "0.7797" in result_str or "0.78" in result_str, f"Expected ~0.78 in result, got: {result_str}"
+
+    def test_quadraticfit_perfect(self, calc):
+        """quadraticfit([1,2,3], [1,4,9]) → x^2."""
+        from pyqalculate.math_structure import MathStructure
+        x = MathStructure.vector(MathStructure(1), MathStructure(2), MathStructure(3))
+        y = MathStructure.vector(MathStructure(1), MathStructure(4), MathStructure(9))
+        func = calc.get_function("quadraticfit")
+        assert func is not None
+        result = func.calculate([x, y])
+        assert not result.is_undefined(), f"Expected valid result, got undefined"
+        result_str = result.print()
+        assert "x" in result_str, f"Expected 'x' in result, got: {result_str}"
+
+    def test_quadraticfit_insufficient(self, calc):
+        """quadraticfit([1,2], [1,2]) → undefined (fewer than 3 points)."""
+        from pyqalculate.math_structure import MathStructure
+        x = MathStructure.vector(MathStructure(1), MathStructure(2))
+        y = MathStructure.vector(MathStructure(1), MathStructure(2))
+        func = calc.get_function("quadraticfit")
+        assert func is not None
+        result = func.calculate([x, y])
+        assert result.is_undefined(), "Expected undefined for fewer than 3 points"
+
+    def test_cubicfit_upstream(self, calc):
+        """cubicfit([5,3,4,5,6,7,13,24]) matches upstream reference."""
+        from pyqalculate.math_structure import MathStructure
+        y = MathStructure.vector(
+            MathStructure(5), MathStructure(3), MathStructure(4),
+            MathStructure(5), MathStructure(6), MathStructure(7),
+            MathStructure(13), MathStructure(24),
+        )
+        func = calc.get_function("cubicfit")
+        assert func is not None
+        result = func.calculate([y])
+        assert not result.is_undefined(), f"Expected valid result, got undefined"
+        result_str = result.print()
+        assert "0.148" in result_str or "0.149" in result_str, f"Expected ~0.149 in result, got: {result_str}"
+
+    def test_cubicfit_perfect(self, calc):
+        """cubicfit([1,2,3,4], [1,8,27,64]) → x^3."""
+        from pyqalculate.math_structure import MathStructure
+        x = MathStructure.vector(MathStructure(1), MathStructure(2), MathStructure(3), MathStructure(4))
+        y = MathStructure.vector(MathStructure(1), MathStructure(8), MathStructure(27), MathStructure(64))
+        func = calc.get_function("cubicfit")
+        assert func is not None
+        result = func.calculate([x, y])
+        assert not result.is_undefined(), f"Expected valid result, got undefined"
+        result_str = result.print()
+        assert "x" in result_str, f"Expected 'x' in result, got: {result_str}"
+
+    def test_cubicfit_insufficient(self, calc):
+        """cubicfit([1,2,3], [1,2,3]) → undefined (fewer than 4 points)."""
+        from pyqalculate.math_structure import MathStructure
+        x = MathStructure.vector(MathStructure(1), MathStructure(2), MathStructure(3))
+        y = MathStructure.vector(MathStructure(1), MathStructure(2), MathStructure(3))
+        func = calc.get_function("cubicfit")
+        assert func is not None
+        result = func.calculate([x, y])
+        assert result.is_undefined(), "Expected undefined for fewer than 4 points"
+
+
+# ============================================================================
 # 9. BASE CONVERSION
 # ============================================================================
 

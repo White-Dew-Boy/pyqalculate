@@ -2616,6 +2616,111 @@ class CovarianceFunction(MathFunction):
     def copy(self): return CovarianceFunction()
 
 
+class LinearFitFunction(MathFunction):
+    """Simple linear fit: linearfit(v) or linearfit(x, y)."""
+    def __init__(self):
+        super().__init__("linearfit", 1, 2, "Regression", "Simple linear fit")
+        self.set_argument_definition(0, Argument("x"))
+        self.set_argument_definition(1, Argument("y"))
+    def id(self) -> int: return 0
+    def calculate(self, vargs, eo=None):
+        import numpy as np
+        try:
+            if len(vargs) == 1:
+                y = _extract_float_list(vargs[0])
+                if len(y) < 2:
+                    return _undef()
+                x = list(range(1, len(y) + 1))
+            else:
+                x = _extract_float_list(vargs[0])
+                y = _extract_float_list(vargs[1])
+                if len(x) != len(y) or len(x) < 2:
+                    return _undef()
+            coeffs = np.polynomial.polynomial.polyfit(x, y, 1)
+            c0, c1 = float(coeffs[0]), float(coeffs[1])
+            from pyqalculate.math_structure import MathStructure
+            x_sym = MathStructure.from_symbol("x")
+            term_a = MathStructure.multiplication(_ms(_num(c1)), x_sym)
+            result = MathStructure.addition(term_a, _ms(_num(c0)))
+            return result
+        except Exception:
+            pass
+        return _undef()
+    def copy(self): return LinearFitFunction()
+
+
+class QuadraticFitFunction(MathFunction):
+    """Quadratic fit: quadraticfit(v) or quadraticfit(x, y)."""
+    def __init__(self):
+        super().__init__("quadraticfit", 1, 2, "Regression", "Quadratic fit")
+        self.set_argument_definition(0, Argument("x"))
+        self.set_argument_definition(1, Argument("y"))
+    def id(self) -> int: return 0
+    def calculate(self, vargs, eo=None):
+        import numpy as np
+        try:
+            if len(vargs) == 1:
+                y = _extract_float_list(vargs[0])
+                if len(y) < 3:
+                    return _undef()
+                x = list(range(1, len(y) + 1))
+            else:
+                x = _extract_float_list(vargs[0])
+                y = _extract_float_list(vargs[1])
+                if len(x) != len(y) or len(x) < 3:
+                    return _undef()
+            coeffs = np.polynomial.polynomial.polyfit(x, y, 2)
+            c0, c1, c2 = float(coeffs[0]), float(coeffs[1]), float(coeffs[2])
+            from pyqalculate.math_structure import MathStructure
+            x_sym = MathStructure.from_symbol("x")
+            x_sq = MathStructure.power(x_sym, _ms(_num(2)))
+            term_c2 = MathStructure.multiplication(_ms(_num(c2)), x_sq)
+            term_c1 = MathStructure.multiplication(_ms(_num(c1)), x_sym)
+            result = MathStructure.addition(term_c2, term_c1, _ms(_num(c0)))
+            return result
+        except Exception:
+            pass
+        return _undef()
+    def copy(self): return QuadraticFitFunction()
+
+
+class CubicFitFunction(MathFunction):
+    """Cubic fit: cubicfit(v) or cubicfit(x, y)."""
+    def __init__(self):
+        super().__init__("cubicfit", 1, 2, "Regression", "Cubic fit")
+        self.set_argument_definition(0, Argument("x"))
+        self.set_argument_definition(1, Argument("y"))
+    def id(self) -> int: return 0
+    def calculate(self, vargs, eo=None):
+        import numpy as np
+        try:
+            if len(vargs) == 1:
+                y = _extract_float_list(vargs[0])
+                if len(y) < 4:
+                    return _undef()
+                x = list(range(1, len(y) + 1))
+            else:
+                x = _extract_float_list(vargs[0])
+                y = _extract_float_list(vargs[1])
+                if len(x) != len(y) or len(x) < 4:
+                    return _undef()
+            coeffs = np.polynomial.polynomial.polyfit(x, y, 3)
+            c0, c1, c2, c3 = float(coeffs[0]), float(coeffs[1]), float(coeffs[2]), float(coeffs[3])
+            from pyqalculate.math_structure import MathStructure
+            x_sym = MathStructure.from_symbol("x")
+            x_sq = MathStructure.power(x_sym, _ms(_num(2)))
+            x_cu = MathStructure.power(x_sym, _ms(_num(3)))
+            term_c3 = MathStructure.multiplication(_ms(_num(c3)), x_cu)
+            term_c2 = MathStructure.multiplication(_ms(_num(c2)), x_sq)
+            term_c1 = MathStructure.multiplication(_ms(_num(c1)), x_sym)
+            result = MathStructure.addition(term_c3, term_c2, term_c1, _ms(_num(c0)))
+            return result
+        except Exception:
+            pass
+        return _undef()
+    def copy(self): return CubicFitFunction()
+
+
 # ============================================================================
 # 9. BASE CONVERSION
 # ============================================================================
@@ -3914,6 +4019,11 @@ def get_default_registry() -> FunctionRegistry:
         _default_registry.register(RandFunction())
         _default_registry.register(CorrelationFunction())
         _default_registry.register(CovarianceFunction())
+
+        # Regression (3)
+        _default_registry.register(LinearFitFunction())
+        _default_registry.register(QuadraticFitFunction())
+        _default_registry.register(CubicFitFunction())
 
         # Base Conversion (8)
         _default_registry.register(BinFunction())

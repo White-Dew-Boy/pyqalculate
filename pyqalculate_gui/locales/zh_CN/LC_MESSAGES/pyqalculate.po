@@ -83,6 +83,9 @@ msgstr "切换单位换算"
 msgid "Plot..."
 msgstr "绘图..."
 
+msgid "Curve Fitting..."
+msgstr "曲线拟合..."
+
 msgid "Number Bases..."
 msgstr "进制转换..."
 
@@ -338,6 +341,46 @@ msgstr "点"
 
 msgid "steps"
 msgstr "阶梯"
+
+# ==================== curve_fit_dialog.py ====================
+msgid "Curve Fitting"
+msgstr "曲线拟合"
+
+msgid "Data"
+msgstr "数据"
+
+msgid "X values:"
+msgstr "X 值:"
+
+msgid "Y values:"
+msgstr "Y 值:"
+
+msgid "Fit Type"
+msgstr "拟合类型"
+
+msgid "Linear"
+msgstr "线性"
+
+msgid "Quadratic"
+msgstr "二次"
+
+msgid "Cubic"
+msgstr "三次"
+
+msgid "Fit"
+msgstr "拟合"
+
+msgid "Insert to Expression"
+msgstr "插入到表达式"
+
+msgid "Error: Invalid numbers in input."
+msgstr "错误: 输入包含无效数字。"
+
+msgid "Error: No Y values provided."
+msgstr "错误: 未提供 Y 值。"
+
+msgid "Error: No calculator service."
+msgstr "错误: 计算器服务不可用。"
 
 # ==================== import_csv_dialog.py ====================
 msgid "Import CSV"

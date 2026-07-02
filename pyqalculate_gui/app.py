@@ -15,6 +15,7 @@ from tkinter import messagebox, ttk
 from pyqalculate.types import ApproximationMode, EvaluationOptions
 from pyqalculate_gui.autocomplete import AutoComplete
 from pyqalculate_gui.calculator_service import CalculatorService
+from pyqalculate_gui.curve_fit_dialog import CurveFitDialog
 from pyqalculate_gui.dialogs.functions_list import FunctionsListDialog
 from pyqalculate_gui.event_bus import (
     CLEAR_ALL,
@@ -27,6 +28,7 @@ from pyqalculate_gui.event_bus import (
     IMPORT_XLSX,
     MODE_CHANGED,
     OPEN_HELP_DOC,
+    OPEN_CURVE_FITTING,
     OPEN_HISTORY_WINDOW,
     OPEN_NUMBER_BASES,
     OPEN_PLOT,
@@ -241,6 +243,7 @@ class App:
         bus.subscribe(OPEN_UNIT_CONVERSION, lambda: self._on_open_unit_conversion())
         bus.subscribe(OPEN_HISTORY_WINDOW, lambda: self._on_open_history_window())
         bus.subscribe("open_manage_functions", lambda: self._open_manage_functions())
+        bus.subscribe(OPEN_CURVE_FITTING, self._on_open_curve_fitting)
 
     # ------------------------------------------------------------------
     # Keyboard shortcuts
@@ -572,6 +575,15 @@ class App:
         """Open the manage functions dialog."""
         FunctionsListDialog(
             self._root,
+            theme=self._theme,
+            event_bus=self._event_bus,
+            calculator=self._calculator,
+        ).show()
+
+    def _on_open_curve_fitting(self) -> None:
+        """Open the curve fitting dialog."""
+        CurveFitDialog(
+            parent=self._root,
             theme=self._theme,
             event_bus=self._event_bus,
             calculator=self._calculator,

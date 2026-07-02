@@ -1020,6 +1020,74 @@ class TestStatistics:
 
 
 # ============================================================================
+# 8.7 REGRESSION
+# ============================================================================
+
+
+class TestRegression:
+    """Tests for regression/curve-fitting functions."""
+
+    def test_linearfit_function_registered(self, calc: Calculator) -> None:
+        """linearfit function is registered and callable."""
+        func = calc.get_function("linearfit")
+        assert func is not None
+        assert func.name() == "linearfit"
+
+    def test_quadraticfit_function_registered(self, calc: Calculator) -> None:
+        """quadraticfit function is registered and callable."""
+        func = calc.get_function("quadraticfit")
+        assert func is not None
+        assert func.name() == "quadraticfit"
+
+    def test_cubicfit_function_registered(self, calc: Calculator) -> None:
+        """cubicfit function is registered and callable."""
+        func = calc.get_function("cubicfit")
+        assert func is not None
+        assert func.name() == "cubicfit"
+
+    def test_quadraticfit_upstream_reference(self, calc: Calculator) -> None:
+        """quadraticfit([5,3,4,5,6,7,13,24]) matches upstream reference."""
+        y = MathStructure.vector(
+            MathStructure(5), MathStructure(3), MathStructure(4),
+            MathStructure(5), MathStructure(6), MathStructure(7),
+            MathStructure(13), MathStructure(24),
+        )
+        func = calc.get_function("quadraticfit")
+        assert func is not None
+        result = func.calculate([y])
+        assert not result.is_undefined()
+        result_str = result.print()
+        # Upstream: 0.7797619048*x^2 - 4.720238095*x + 9.732142857
+        assert "0.7797" in result_str or "0.78" in result_str
+
+    def test_cubicfit_upstream_reference(self, calc: Calculator) -> None:
+        """cubicfit([5,3,4,5,6,7,13,24]) matches upstream reference."""
+        y = MathStructure.vector(
+            MathStructure(5), MathStructure(3), MathStructure(4),
+            MathStructure(5), MathStructure(6), MathStructure(7),
+            MathStructure(13), MathStructure(24),
+        )
+        func = calc.get_function("cubicfit")
+        assert func is not None
+        result = func.calculate([y])
+        assert not result.is_undefined()
+        result_str = result.print()
+        # Upstream: 0.1489898990*x^3 - 1.231601732*x^2 + 2.952741703*x + 2.357142857
+        assert "0.148" in result_str or "0.149" in result_str
+
+    def test_linearfit_xy_via_calculator(self, calc: Calculator) -> None:
+        """linearfit([1,2,3], [2,4,6]) returns expression with slope 2."""
+        x = MathStructure.vector(MathStructure(1), MathStructure(2), MathStructure(3))
+        y = MathStructure.vector(MathStructure(2), MathStructure(4), MathStructure(6))
+        func = calc.get_function("linearfit")
+        assert func is not None
+        result = func.calculate([x, y])
+        assert not result.is_undefined()
+        result_str = result.print()
+        assert "2" in result_str  # slope should be 2
+
+
+# ============================================================================
 # 9. TIME & DATE
 # Source: 09_time_date.txt
 # ============================================================================
