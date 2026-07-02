@@ -318,6 +318,27 @@ msgstr "保存失败:\n{}"
 msgid "Save Error"
 msgstr "保存错误"
 
+msgid "lines"
+msgstr "折线"
+
+msgid "scatter"
+msgstr "散点"
+
+msgid "bar"
+msgstr "柱状"
+
+msgid "histogram"
+msgstr "直方"
+
+msgid "points+lines"
+msgstr "点线"
+
+msgid "dots"
+msgstr "点"
+
+msgid "steps"
+msgstr "阶梯"
+
 # ==================== import_csv_dialog.py ====================
 msgid "Import CSV"
 msgstr "导入 CSV"

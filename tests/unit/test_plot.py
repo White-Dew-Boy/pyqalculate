@@ -13,11 +13,12 @@ from __future__ import annotations
 import os
 import tempfile
 
+import numpy as np
 import pytest
 
 from pyqalculate.calculator import Calculator
 from pyqalculate.plot import Plotter, PlotData
-from pyqalculate.types import PlotParameters
+from pyqalculate.types import PlotParameters, PlotStyle
 
 
 # ---------------------------------------------------------------------------
@@ -345,3 +346,189 @@ class TestPlotFunctionIntegration:
         assert copy is not func
         assert copy.name() == "plot"
         assert copy.id() == 2690
+
+    @skip_no_matplotlib
+    def test_plot_function_with_style_scatter(self, calc: Calculator, tmp_dir: str) -> None:
+        """plot(expr, x_min, x_max, file, 'scatter') generates scatter plot."""
+        filepath = tmp_dir.replace("\\", "/") + "/builtin_scatter.png"
+        result = calc.calculate_and_print(f'plot(x^2, 0, 5, "{filepath}", "scatter")')
+        assert os.path.exists(filepath)
+        assert os.path.getsize(filepath) > 0
+
+    @skip_no_matplotlib
+    def test_plot_function_with_style_bar(self, calc: Calculator, tmp_dir: str) -> None:
+        """plot(expr, x_min, x_max, file, 'bar') generates bar chart."""
+        filepath = tmp_dir.replace("\\", "/") + "/builtin_bar.png"
+        result = calc.calculate_and_print(f'plot(x, 0, 10, "{filepath}", "bar")')
+        assert os.path.exists(filepath)
+        assert os.path.getsize(filepath) > 0
+
+    @skip_no_matplotlib
+    def test_plot_function_with_style_histogram(self, calc: Calculator, tmp_dir: str) -> None:
+        """plot(expr, x_min, x_max, file, 'histogram') generates histogram."""
+        filepath = tmp_dir.replace("\\", "/") + "/builtin_hist.png"
+        result = calc.calculate_and_print(f'plot(sin(x), 0, 6.28, "{filepath}", "histogram")')
+        assert os.path.exists(filepath)
+        assert os.path.getsize(filepath) > 0
+
+    @skip_no_matplotlib
+    def test_plot_function_no_style_backward_compat(self, calc: Calculator, tmp_dir: str) -> None:
+        """plot(expr) without style generates default line plot."""
+        filepath = tmp_dir.replace("\\", "/") + "/builtin_default.png"
+        result = calc.calculate_and_print(f'plot(x^2, 0, 5, "{filepath}")')
+        assert os.path.exists(filepath)
+        assert os.path.getsize(filepath) > 0
+
+
+# ---------------------------------------------------------------------------
+# PlotStyle Dispatch Tests
+# ---------------------------------------------------------------------------
+
+
+class TestPlotStyle:
+    """Tests for PlotStyle dispatch in plot_data() and plot()."""
+
+    @skip_no_matplotlib
+    def test_style_scatter(self, plotter: Plotter, tmp_dir: str) -> None:
+        """Scatter plot produces ax.collections > 0."""
+        filepath = os.path.join(tmp_dir, "scatter.png")
+        result = plotter.plot_data([1, 2, 3], [10, 20, 30], style=PlotStyle.POINTS, filename=filepath)
+        assert result == filepath
+        assert os.path.exists(filepath)
+        assert os.path.getsize(filepath) > 0
+        # Verify artist type
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots()
+        plotter._render_with_style(ax, np.array([1, 2, 3]), np.array([10, 20, 30]), PlotStyle.POINTS)
+        assert len(ax.collections) > 0
+        plt.close(fig)
+
+    @skip_no_matplotlib
+    def test_style_bar(self, plotter: Plotter, tmp_dir: str) -> None:
+        """Bar chart produces ax.containers > 0 with correct width."""
+        filepath = os.path.join(tmp_dir, "bar.png")
+        # Use non-unit spacing: width should be (2-0)*0.8 = 1.6
+        result = plotter.plot_data([0, 2, 4, 6], [10, 20, 30, 40], style=PlotStyle.BOXES, filename=filepath)
+        assert result == filepath
+        assert os.path.exists(filepath)
+        assert os.path.getsize(filepath) > 0
+        # Verify artist type and width
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots()
+        plotter._render_with_style(ax, np.array([0, 2, 4, 6]), np.array([10, 20, 30, 40]), PlotStyle.BOXES)
+        assert len(ax.containers) > 0
+        bar = ax.containers[0][0]
+        assert bar.get_width() == pytest.approx(1.6)
+        plt.close(fig)
+
+    @skip_no_matplotlib
+    def test_style_histogram(self, plotter: Plotter, tmp_dir: str) -> None:
+        """Histogram produces ax.patches > 0."""
+        filepath = os.path.join(tmp_dir, "hist.png")
+        result = plotter.plot_data(None, [1, 2, 2, 3, 3, 3, 4, 4, 5], style=PlotStyle.HISTOGRAM, filename=filepath)
+        assert result == filepath
+        assert os.path.exists(filepath)
+        assert os.path.getsize(filepath) > 0
+        # Verify artist type
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots()
+        plotter._render_with_style(ax, np.arange(9), np.array([1, 2, 2, 3, 3, 3, 4, 4, 5]), PlotStyle.HISTOGRAM)
+        assert len(ax.patches) > 0
+        plt.close(fig)
+
+    @skip_no_matplotlib
+    def test_default_style_backward_compat(self, plotter: Plotter, tmp_dir: str) -> None:
+        """plot_data with no style arg produces line plot (backward compat)."""
+        filepath = os.path.join(tmp_dir, "default.png")
+        result = plotter.plot_data([1, 2, 3], [10, 20, 30], filename=filepath)
+        assert result == filepath
+        assert os.path.exists(filepath)
+        assert os.path.getsize(filepath) > 0
+
+    @skip_no_matplotlib
+    def test_nan_handling_scatter(self, plotter: Plotter, tmp_dir: str) -> None:
+        """NaN in y does not crash scatter plot."""
+        filepath = os.path.join(tmp_dir, "nan_scatter.png")
+        result = plotter.plot_data([0, 1, 2], [float("nan"), 1, 2], style=PlotStyle.POINTS, filename=filepath)
+        assert result == filepath
+        assert os.path.exists(filepath)
+
+    @skip_no_matplotlib
+    def test_nan_handling_bar_all_nan(self, plotter: Plotter, tmp_dir: str) -> None:
+        """All-NaN values for bar does not crash."""
+        filepath = os.path.join(tmp_dir, "nan_bar.png")
+        result = plotter.plot_data([0, 1, 2], [float("nan")] * 3, style=PlotStyle.BOXES, filename=filepath)
+        assert result == filepath
+        assert os.path.exists(filepath)
+
+    def test_unimplemented_style_raises(self, plotter: Plotter) -> None:
+        """POLAR and CANDLESTICKS raise NotImplementedError."""
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots()
+        with pytest.raises(NotImplementedError):
+            plotter._render_with_style(ax, np.array([1, 2]), np.array([3, 4]), PlotStyle.POLAR)
+        with pytest.raises(NotImplementedError):
+            plotter._render_with_style(ax, np.array([1, 2]), np.array([3, 4]), PlotStyle.CANDLESTICKS)
+        plt.close(fig)
+
+    @skip_no_matplotlib
+    def test_plot_with_style_scatter(self, plotter: Plotter, tmp_dir: str) -> None:
+        """plot() with style=POINTS produces scatter plot."""
+        filepath = os.path.join(tmp_dir, "f_scatter.png")
+        result = plotter.plot("x^2", x_min=0, x_max=5, style=PlotStyle.POINTS, filename=filepath)
+        assert result == filepath
+        assert os.path.exists(filepath)
+        assert os.path.getsize(filepath) > 0
+        # Verify artist type
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots()
+        plotter._render_with_style(ax, np.array([1, 2, 3]), np.array([1, 4, 9]), PlotStyle.POINTS)
+        assert len(ax.collections) > 0
+        plt.close(fig)
+
+    @skip_no_matplotlib
+    def test_plot_with_style_bar(self, plotter: Plotter, tmp_dir: str) -> None:
+        """plot() with style=BOXES produces bar chart."""
+        filepath = os.path.join(tmp_dir, "f_bar.png")
+        result = plotter.plot("x", x_min=0, x_max=10, style=PlotStyle.BOXES, filename=filepath)
+        assert result == filepath
+        assert os.path.exists(filepath)
+        assert os.path.getsize(filepath) > 0
+
+    @skip_no_matplotlib
+    def test_plot_with_style_histogram(self, plotter: Plotter, tmp_dir: str) -> None:
+        """plot() with style=HISTOGRAM produces histogram of function values."""
+        filepath = os.path.join(tmp_dir, "f_hist.png")
+        result = plotter.plot("sin(x)", x_min=0, x_max=6.28, style=PlotStyle.HISTOGRAM, filename=filepath)
+        assert result == filepath
+        assert os.path.exists(filepath)
+        assert os.path.getsize(filepath) > 0
+        # Verify artist type
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots()
+        plotter._render_with_style(ax, np.arange(10), np.random.rand(10), PlotStyle.HISTOGRAM)
+        assert len(ax.patches) > 0
+        plt.close(fig)
+
+    @skip_no_matplotlib
+    def test_plot_multi_with_styles(self, plotter: Plotter, tmp_dir: str) -> None:
+        """plot_multi() with per-expression styles produces mixed plot."""
+        filepath = os.path.join(tmp_dir, "multi_mixed.png")
+        result = plotter.plot_multi(
+            ["sin(x)", "cos(x)"],
+            x_min=0, x_max=6.28,
+            styles=[PlotStyle.LINES, PlotStyle.POINTS],
+            filename=filepath,
+        )
+        assert result == filepath
+        assert os.path.exists(filepath)
+        assert os.path.getsize(filepath) > 0
+
+    @skip_no_matplotlib
+    def test_plot_backward_compat(self, plotter: Plotter, tmp_dir: str) -> None:
+        """plot() without style arg behaves same as before (line plot)."""
+        filepath = os.path.join(tmp_dir, "backward.png")
+        result = plotter.plot("x^2", filename=filepath)
+        assert result == filepath
+        assert os.path.exists(filepath)
+        assert os.path.getsize(filepath) > 0

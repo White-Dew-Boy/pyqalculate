@@ -3589,31 +3589,60 @@ class EvenFunction(MathFunction):
     def copy(self): return EvenFunction()
 
 
+def _parse_style(s: str) -> "PlotStyle":
+    """Parse a style string to PlotStyle enum.
+
+    Accepts both display names (scatter, bar, histogram) and enum names (POINTS, BOXES, HISTOGRAM).
+    Case-insensitive.
+    """
+    from pyqalculate.plot import STYLE_DISPLAY_MAP
+    from pyqalculate.types import PlotStyle
+
+    # Try display name match first (lowercase)
+    s_lower = s.strip().lower()
+    for style, display in STYLE_DISPLAY_MAP.items():
+        if display == s_lower:
+            return style
+
+    # Try enum name match (case-insensitive)
+    s_upper = s.strip().upper()
+    try:
+        return PlotStyle[s_upper]
+    except KeyError:
+        valid = [f"{d} ({s.name})" for s, d in STYLE_DISPLAY_MAP.items()]
+        raise ValueError(f"Unknown plot style: {s!r}. Valid styles: {', '.join(valid)}")
+
+
 class PlotFunction(MathFunction):
     """Plot a mathematical expression.
 
-    Usage: plot(expression, x_min, x_max[, filename])
+    Usage: plot(expression, x_min, x_max[, filename[, style]])
 
     Plots the given expression over the range [x_min, x_max].
     If filename is provided, saves to file; otherwise displays interactively.
+    Optional style argument sets the plot style: lines, scatter, bar, histogram,
+    points+lines, steps, dots (or enum names like POINTS, BOXES, etc.).
 
     Examples:
         plot(x^2, -5, 5)
         plot(sin(x), 0, 2*pi, "sine.png")
+        plot(x^2, 0, 5, "plot.png", "scatter")
     """
 
     def __init__(self):
-        super().__init__("plot", 1, 4, "Utility", "Plot function")
+        super().__init__("plot", 1, 5, "Utility", "Plot function")
         self.set_argument_definition(0, SymbolicArgument("expression"))
         self.set_argument_definition(1, NumberArgument("x_min", does_test=False))
         self.set_argument_definition(2, NumberArgument("x_max", does_test=False))
         self.set_argument_definition(3, TextArgument("filename", does_test=False))
+        self.set_argument_definition(4, TextArgument("style", does_test=False))
 
     def id(self) -> int:
         return FUNCTION_ID_PLOT
 
     def calculate(self, vargs, eo=None):
         from pyqalculate.math_structure import MathStructure
+        from pyqalculate.types import PlotStyle
 
         # Extract expression as string
         expr_str = str(vargs[0]) if len(vargs) > 0 else "x"
@@ -3627,10 +3656,21 @@ class PlotFunction(MathFunction):
         # Extract filename
         filename = str(vargs[3]) if len(vargs) > 3 else ""
 
+        # Parse style (5th argument, optional)
+        style = PlotStyle.LINES
+        if len(vargs) >= 5:
+            style_str = str(vargs[4]).strip()
+            if style_str:
+                # Remove quotes if present
+                if (style_str.startswith('"') and style_str.endswith('"')) or \
+                   (style_str.startswith("'") and style_str.endswith("'")):
+                    style_str = style_str[1:-1]
+                style = _parse_style(style_str)
+
         try:
             from pyqalculate.plot import Plotter
             plotter = Plotter()
-            result_path = plotter.plot(expr_str, x_min=x_min, x_max=x_max, filename=filename)
+            result_path = plotter.plot(expr_str, x_min=x_min, x_max=x_max, filename=filename, style=style)
 
             if result_path:
                 return MathStructure.from_symbol(result_path)
@@ -3641,6 +3681,8 @@ class PlotFunction(MathFunction):
                 "Error: matplotlib is required for plotting. "
                 "Install with: pip install matplotlib"
             )
+        except ValueError as e:
+            return MathStructure.from_symbol(f"Plot error: {e}")
         except Exception as e:
             return MathStructure.from_symbol(f"Plot error: {e}")
 

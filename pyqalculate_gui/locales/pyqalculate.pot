@@ -316,6 +316,27 @@ msgstr ""
 msgid "Save Error"
 msgstr ""
 
+msgid "lines"
+msgstr ""
+
+msgid "scatter"
+msgstr ""
+
+msgid "bar"
+msgstr ""
+
+msgid "histogram"
+msgstr ""
+
+msgid "points+lines"
+msgstr ""
+
+msgid "dots"
+msgstr ""
+
+msgid "steps"
+msgstr ""
+
 # ==================== import_csv_dialog.py ====================
 msgid "Import CSV"
 msgstr ""

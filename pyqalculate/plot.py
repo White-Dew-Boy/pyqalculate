@@ -37,6 +37,17 @@ _SAFE_MATH_NS = {
 }
 
 
+STYLE_DISPLAY_MAP: dict[PlotStyle, str] = {
+    PlotStyle.LINES: "lines",
+    PlotStyle.POINTS: "scatter",
+    PlotStyle.BOXES: "bar",
+    PlotStyle.HISTOGRAM: "histogram",
+    PlotStyle.POINTS_LINES: "points+lines",
+    PlotStyle.STEPS: "steps",
+    PlotStyle.DOTS: "dots",
+}
+
+
 class PlotData:
     """Data for a single plot series."""
 
@@ -84,6 +95,51 @@ class Plotter:
 
     def __init__(self, calculator: Calculator | None = None) -> None:
         self._calculator = calculator
+        import os
+        try:
+            import matplotlib
+            if os.environ.get("DISPLAY") is None:
+                matplotlib.use("Agg")
+        except ImportError:
+            pass
+
+    def _render_with_style(self, ax, x, y, style: PlotStyle = PlotStyle.LINES, label: str = "", color: str = "") -> None:
+        """Dispatch rendering to the appropriate matplotlib API based on PlotStyle."""
+        import numpy as np
+
+        kwargs: dict = {"label": label}
+        if color:
+            kwargs["color"] = color
+
+        if style == PlotStyle.LINES:
+            ax.plot(x, y, linewidth=1.5, **kwargs)
+        elif style == PlotStyle.POINTS:
+            ax.scatter(x, y, **kwargs)
+        elif style == PlotStyle.BOXES:
+            # Filter NaN only for bar (ax.bar errors on NaN)
+            mask = ~np.isnan(y)
+            x_f, y_f = x[mask], y[mask]
+            if len(x_f) == 0:
+                ax.text(0.5, 0.5, "All values are NaN", transform=ax.transAxes, ha="center", va="center")
+                return
+            w = (x_f[1] - x_f[0]) * 0.8 if len(x_f) > 1 else 0.8
+            ax.bar(x_f, y_f, width=w, **kwargs)
+        elif style == PlotStyle.HISTOGRAM:
+            # Filter NaN for histogram
+            mask = ~np.isnan(y)
+            y_f = y[mask]
+            if len(y_f) == 0:
+                ax.text(0.5, 0.5, "All values are NaN", transform=ax.transAxes, ha="center", va="center")
+                return
+            ax.hist(y_f, bins="auto", **kwargs)
+        elif style == PlotStyle.STEPS:
+            ax.step(x, y, where="post", linewidth=1.5, **kwargs)
+        elif style == PlotStyle.POINTS_LINES:
+            ax.plot(x, y, "o-", linewidth=1.5, **kwargs)
+        elif style == PlotStyle.DOTS:
+            ax.plot(x, y, ".", linewidth=1.5, **kwargs)
+        else:  # POLAR, CANDLESTICKS, etc.
+            raise NotImplementedError(f"Plot style {style!r} is not yet implemented")
 
     def plot(
         self,
@@ -93,6 +149,7 @@ class Plotter:
         x_max: float = 10.0,
         num_points: int = 1000,
         filename: str = "",
+        style: PlotStyle = PlotStyle.LINES,
     ) -> str:
         """Plot a mathematical expression.
 
@@ -103,6 +160,7 @@ class Plotter:
             x_max: Maximum x value.
             num_points: Number of points to evaluate.
             filename: If provided, save to this file instead of showing.
+            style: Plot style (lines, points, boxes, histogram, etc.).
 
         Returns:
             Path to saved file, or empty string if displayed interactively.
@@ -115,17 +173,6 @@ class Plotter:
             params.filename = filename
 
         try:
-            import matplotlib
-            if not params.filename:
-                # Use non-interactive backend if no display
-                try:
-                    import os
-                    if os.environ.get("DISPLAY") is None and os.name != "nt":
-                        matplotlib.use("Agg")
-                except Exception:
-                    pass
-            else:
-                matplotlib.use("Agg")
             import matplotlib.pyplot as plt
             import numpy as np
         except ImportError:
@@ -138,8 +185,7 @@ class Plotter:
         y = np.array([_eval_expression(expression, xi) for xi in x])
 
         fig, ax = plt.subplots(figsize=(10, 6))
-        color = params.color if isinstance(params.color, str) and params.color else "blue"
-        ax.plot(x, y, linewidth=1.5, color=color, label=expression)
+        self._render_with_style(ax, x, y, style, label=expression)
 
         self._apply_axes_settings(ax, params, expression)
         ax.legend()
@@ -156,6 +202,7 @@ class Plotter:
         filename: str = "",
         title: str = "",
         colors: Sequence[str] | None = None,
+        styles: Sequence[PlotStyle] | None = None,
     ) -> str:
         """Plot multiple mathematical expressions on the same axes.
 
@@ -168,6 +215,7 @@ class Plotter:
             filename: If provided, save to this file.
             title: Plot title.
             colors: Optional list of colors for each expression.
+            styles: Optional list of PlotStyle for each expression.
 
         Returns:
             Path to saved file, or empty string if displayed interactively.
@@ -180,16 +228,6 @@ class Plotter:
             params.title = title
 
         try:
-            import matplotlib
-            if params.filename:
-                matplotlib.use("Agg")
-            else:
-                try:
-                    import os
-                    if os.environ.get("DISPLAY") is None and os.name != "nt":
-                        matplotlib.use("Agg")
-                except Exception:
-                    pass
             import matplotlib.pyplot as plt
             import numpy as np
         except ImportError:
@@ -206,7 +244,8 @@ class Plotter:
         for i, expr in enumerate(expressions):
             y = np.array([_eval_expression(expr, xi) for xi in x])
             color = colors[i % len(colors)]
-            ax.plot(x, y, linewidth=1.5, color=color, label=expr)
+            s = styles[i] if styles else PlotStyle.LINES
+            self._render_with_style(ax, x, y, s, label=expr, color=color)
 
         self._apply_axes_settings(ax, params, ", ".join(expressions))
         ax.legend()
@@ -215,18 +254,20 @@ class Plotter:
 
     def plot_data(
         self,
-        x_values: list[float],
+        x_values: list[float] | None,
         y_values: list[float],
         params: PlotParameters | None = None,
         filename: str = "",
+        style: PlotStyle = PlotStyle.LINES,
     ) -> str:
         """Plot raw x/y data.
 
         Args:
-            x_values: List of x values.
+            x_values: List of x values, or None for auto-generated indices.
             y_values: List of y values.
             params: Plot parameters.
             filename: If provided, save to this file.
+            style: Plot style (lines, points, boxes, histogram, etc.).
 
         Returns:
             Path to saved file, or empty string if displayed interactively.
@@ -237,15 +278,15 @@ class Plotter:
             params.filename = filename
 
         try:
-            import matplotlib
-            if params.filename:
-                matplotlib.use("Agg")
             import matplotlib.pyplot as plt
+            import numpy as np
         except ImportError:
             raise ImportError("matplotlib is required for plotting.")
 
         fig, ax = plt.subplots(figsize=(10, 6))
-        ax.plot(x_values, y_values, linewidth=1.5)
+        x = np.array(x_values) if x_values is not None else np.arange(len(y_values))
+        y = np.array(y_values)
+        self._render_with_style(ax, x, y, style, label="Data")
 
         self._apply_axes_settings(ax, params, "Data")
         return self._save_or_show(fig, params.filename)
@@ -333,9 +374,6 @@ class Plotter:
             Path to saved file, or empty string if displayed interactively.
         """
         try:
-            import matplotlib
-            if filename:
-                matplotlib.use("Agg")
             import matplotlib.pyplot as plt
             import numpy as np
         except ImportError:
@@ -381,9 +419,6 @@ class Plotter:
             Path to saved file, or empty string if displayed interactively.
         """
         try:
-            import matplotlib
-            if filename:
-                matplotlib.use("Agg")
             import matplotlib.pyplot as plt
             import numpy as np
         except ImportError:
@@ -438,9 +473,6 @@ class Plotter:
             Path to saved file, or empty string if displayed interactively.
         """
         try:
-            import matplotlib
-            if filename:
-                matplotlib.use("Agg")
             import matplotlib.pyplot as plt
             import numpy as np
         except ImportError:

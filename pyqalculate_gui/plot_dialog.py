@@ -234,11 +234,11 @@ class PlotDialog(ModalDialog):
         row += 1
 
         ttk.Label(parent, text=_("Line style:")).grid(row=row, column=0, sticky="w")
-        self._style_var = tk.StringVar(value="lines")
+        self._style_var = tk.StringVar(value=_("lines"))
         style_combo = ttk.Combobox(
             parent,
             textvariable=self._style_var,
-            values=["lines", "points", "points+lines", "dots", "steps"],
+            values=[_("lines"), _("scatter"), _("bar"), _("histogram"), _("points+lines"), _("dots"), _("steps")],
             state="readonly",
             width=14,
         )
@@ -333,20 +333,13 @@ class PlotDialog(ModalDialog):
                 )
             return
 
-        # Build plot style map
+        # Build plot style map for line-based styles
         style_map = {
             "lines": "-",
-            "points": "o",
             "points+lines": "o-",
             "dots": ".",
-            "steps": "steps-post",
         }
-        draw_style = style_map.get(self._style_var.get(), "-")
-        try:
-            lw = float(self._linewidth_var.get())
-        except ValueError:
-            lw = 1.5
-
+        
         # Evaluate expressions
         from pyqalculate.plot import _eval_expression
         import numpy as np
@@ -367,13 +360,44 @@ class PlotDialog(ModalDialog):
         fig, ax = plt.subplots(figsize=(6, 4), dpi=100)
         fig.patch.set_facecolor(self._theme.entry_bg)
 
+        selected_style = self._style_var.get()
+        # Map translated values back to English internal keys
+        _style_reverse = {
+            _("lines"): "lines",
+            _("scatter"): "scatter",
+            _("bar"): "bar",
+            _("histogram"): "histogram",
+            _("points+lines"): "points+lines",
+            _("dots"): "dots",
+            _("steps"): "steps",
+        }
+        selected_style = _style_reverse.get(selected_style, selected_style)
+        
         for i, expr in enumerate(exprs):
             y = np.array([_eval_expression(expr, xi) for xi in x_arr])
             color = _COLORS[i % len(_COLORS)]
-            if draw_style == "steps-post":
-                ax.step(x_arr, y, where="post", linewidth=lw, color=color, label=expr)
+            
+            if selected_style == "scatter":
+                ax.scatter(x_arr, y, color=color, label=expr, s=20)
+            elif selected_style == "bar":
+                # Filter NaN for bar
+                mask = ~np.isnan(y)
+                x_f, y_f = x_arr[mask], y[mask]
+                if len(x_f) > 0:
+                    w = (x_f[1] - x_f[0]) * 0.8 if len(x_f) > 1 else 0.8
+                    ax.bar(x_f, y_f, width=w, color=color, label=expr)
+            elif selected_style == "histogram":
+                # Filter NaN for histogram
+                mask = ~np.isnan(y)
+                y_f = y[mask]
+                if len(y_f) > 0:
+                    ax.hist(y_f, bins="auto", color=color, label=expr, alpha=0.7)
+            elif selected_style == "steps":
+                ax.step(x_arr, y, where="post", linewidth=1.5, color=color, label=expr)
             else:
-                ax.plot(x_arr, y, draw_style, linewidth=lw, color=color, label=expr)
+                # lines, points+lines, dots use format strings
+                draw_style = style_map.get(selected_style, "-")
+                ax.plot(x_arr, y, draw_style, linewidth=1.5, color=color, label=expr)
 
         title = self._title_var.get().strip()
         if title:
