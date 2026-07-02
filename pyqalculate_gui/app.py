@@ -279,8 +279,11 @@ class App:
 
     def _on_expression_submitted(self, expression: str) -> None:
         """Evaluate *expression* (or the edit widget text if empty)."""
-        expr = expression or self._expr_edit.get_expression()
-        expr = self._resolve_answer_refs(expr.strip())
+        if not expression:
+            full_text = self._expr_edit.get_expression()
+            lines = [l for l in full_text.split("\n") if l.strip()]
+            expression = lines[-1] if lines else ""
+        expr = self._resolve_answer_refs(expression.strip())
         if not expr:
             return
 
