@@ -153,6 +153,34 @@ class CalculatorService:
         """Export a MathStructure to CSV file. Returns True on success."""
         return self._calc.exportCSV(mstruct, filename, delimiter=delimiter)
 
+    def import_xlsx(
+        self,
+        filename: str,
+        sheet: int | str = 0,
+        headers: bool = True,
+        first_row: int = 1,
+        to_matrix: bool = False,
+        name: str = "",
+    ):
+        """Import an XLSX file and return the resulting MathStructure."""
+        return self._calc.importXLSX(
+            filename=filename,
+            sheet=sheet,
+            headers=headers,
+            first_row=first_row,
+            to_matrix=to_matrix,
+            name=name,
+        )
+
+    def export_xlsx(
+        self,
+        mstruct,
+        filename: str,
+        sheet_name: str = "Sheet1",
+    ) -> bool:
+        """Export a MathStructure to XLSX file. Returns True on success."""
+        return self._calc.exportXLSX(mstruct, filename, sheet_name=sheet_name)
+
     def get_variable(self, name: str):
         """Get a variable by name, or None if not found."""
         return self._calc.get_variable(name)

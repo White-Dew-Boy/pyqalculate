@@ -33,6 +33,12 @@ msgstr ""
 msgid "Export CSV..."
 msgstr ""
 
+msgid "Import XLSX..."
+msgstr ""
+
+msgid "Export XLSX..."
+msgstr ""
+
 msgid "Exit"
 msgstr ""
 
@@ -433,6 +439,50 @@ msgid "Export Failed"
 msgstr ""
 
 msgid "Could not write the CSV file."
+msgstr ""
+
+# ==================== import_xlsx_dialog.py ====================
+msgid "Import XLSX"
+msgstr ""
+
+msgid "Sheet:"
+msgstr ""
+
+msgid "Select Excel File"
+msgstr ""
+
+msgid "Excel files"
+msgstr ""
+
+msgid "Please select an Excel file."
+msgstr ""
+
+msgid "Could not import the Excel file. Check the file path and format."
+msgstr ""
+
+msgid "Missing Dependency"
+msgstr ""
+
+msgid "The openpyxl library is required for Excel import.\n\nInstall it with:\npip install openpyxl"
+msgstr ""
+
+# ==================== export_xlsx_dialog.py ====================
+msgid "Export XLSX"
+msgstr ""
+
+msgid "Sheet name:"
+msgstr ""
+
+msgid "Save XLSX File"
+msgstr ""
+
+msgid "Could not write the XLSX file."
+msgstr ""
+
+msgid "The openpyxl library is required for Excel export.\n\nInstall it with:\npip install openpyxl"
+msgstr ""
+
+msgid "Data exported to {}"
 msgstr ""
 
 # ==================== conversion_view.py ====================

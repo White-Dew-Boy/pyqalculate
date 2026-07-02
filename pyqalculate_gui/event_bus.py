@@ -24,6 +24,8 @@ OPEN_HISTORY_WINDOW = "open_history_window"
 COPY_RESULT = "copy_result"
 IMPORT_CSV = "import_csv"
 EXPORT_CSV = "export_csv"
+IMPORT_XLSX = "import_xlsx"
+EXPORT_XLSX = "export_xlsx"
 OPEN_HELP_DOC = "open_help_doc"
 
 

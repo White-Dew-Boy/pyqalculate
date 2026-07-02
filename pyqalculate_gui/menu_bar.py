@@ -9,7 +9,9 @@ from pyqalculate_gui.event_bus import (
     CLEAR_ALL,
     COPY_RESULT,
     EXPORT_CSV,
+    EXPORT_XLSX,
     IMPORT_CSV,
+    IMPORT_XLSX,
     OPEN_HELP_DOC,
     OPEN_HISTORY_WINDOW,
     OPEN_NUMBER_BASES,
@@ -55,6 +57,8 @@ class MenuBar:
         menubar.add_cascade(label=_("File"), menu=menu)
         menu.add_command(label=_("Import CSV..."), command=self._emit(IMPORT_CSV))
         menu.add_command(label=_("Export CSV..."), command=self._emit(EXPORT_CSV))
+        menu.add_command(label=_("Import XLSX..."), command=self._emit(IMPORT_XLSX))
+        menu.add_command(label=_("Export XLSX..."), command=self._emit(EXPORT_XLSX))
         menu.add_separator()
         menu.add_command(label=_("Preferences..."), command=self._emit(OPEN_PREFERENCES))
         menu.add_command(label=_("Exit"), command=self._parent.quit)

@@ -2467,6 +2467,109 @@ class Calculator:
             # Return the full matrix
             return MS.matrix(col_vectors)
 
+    def importXLSX(
+        self,
+        filename: str,
+        sheet: int | str = 0,
+        headers: bool = True,
+        first_row: int = 1,
+        to_matrix: bool = False,
+        name: str = "",
+    ) -> "MathStructure":
+        """Import an Excel .xlsx file as a matrix or vector of variables.
+
+        Mirrors importCSV but uses openpyxl for .xlsx files.
+        Requires: pip install pyqalculate[xlsx]
+
+        Args:
+            filename: Path to the .xlsx file.
+            sheet: Worksheet index (int) or name (str). Default: first sheet (0).
+            headers: If True, treat the first data row as column headers.
+            first_row: First data row (1-indexed; rows before this are skipped).
+            to_matrix: If True, return as a single matrix variable.
+                       If False, create separate vector variables per column.
+            name: Variable name prefix. Auto-derived from filename if empty.
+        """
+        try:
+            import openpyxl
+        except ImportError:
+            from pyqalculate.math_structure import MathStructure as _MS
+            return _MS.undefined()
+
+        from pyqalculate.math_structure import MathStructure as MS
+        from pyqalculate.number import Number
+        from pyqalculate.variable import KnownVariable
+
+        def _cell_to_str(value) -> str:
+            """Convert openpyxl cell value to string for _parse_cell."""
+            if value is None:
+                return ""
+            if isinstance(value, bool):
+                return str(int(value))  # "1"/"0", not "True"/"False"
+            return str(value)
+
+        try:
+            wb = openpyxl.load_workbook(filename, data_only=True)
+            ws = wb[sheet] if isinstance(sheet, str) else wb.worksheets[sheet]
+            all_rows = [
+                [_cell_to_str(cell.value) for cell in row]
+                for row in ws.iter_rows(min_row=first_row)
+            ]
+        except (OSError, IndexError, KeyError):
+            return MS.undefined()
+
+        if not all_rows:
+            return MS.undefined()
+
+        # Derive name from filename if not provided
+        if not name:
+            from pathlib import Path as _Path
+            name = _Path(filename).stem
+
+        # Simplified header/data slicing (first_row already consumed by iter_rows)
+        data_rows = list(all_rows)
+        col_headers: list[str] = []
+        if headers and data_rows:
+            col_headers = [c.strip() for c in data_rows[0]]
+            data_rows = data_rows[1:]
+        if not data_rows:
+            return MS.undefined()
+
+        def _parse_cell(cell: str) -> "MathStructure":
+            """Try to parse a cell as a number; fall back to symbolic."""
+            cell = cell.strip()
+            if not cell:
+                return MS(0)
+            try:
+                return MS(float(cell))
+            except ValueError:
+                return MS.from_symbol(cell)
+
+        if to_matrix:
+            matrix_rows = []
+            for row in data_rows:
+                matrix_rows.append(MS.vector(*[_parse_cell(c) for c in row]))
+            mstruct = MS.matrix(matrix_rows)
+            if name:
+                var = KnownVariable("XLSX Data", name, mstruct, title=f"Imported from {filename}")
+                self.add_variable(var)
+            return mstruct
+        else:
+            n_cols = max(len(r) for r in data_rows) if data_rows else 0
+            col_vectors = []
+            for col_idx in range(n_cols):
+                elements = []
+                for row in data_rows:
+                    elements.append(_parse_cell(row[col_idx]) if col_idx < len(row) else MS(0))
+                col_vectors.append(MS.vector(*elements))
+            for i, vec in enumerate(col_vectors):
+                col_name = col_headers[i] if i < len(col_headers) else f"col{i+1}"
+                var_name = f"{name}_{col_name}" if name else col_name
+                var = KnownVariable("XLSX Data", var_name, vec,
+                                    title=f"Column {col_name} from {filename}")
+                self.add_variable(var)
+            return MS.matrix(col_vectors)
+
     def exportCSV(
         self,
         mstruct: "MathStructure",
@@ -2509,6 +2612,64 @@ class Calculator:
                 writer.writerows(rows)
             return True
         except (OSError, csv.Error):
+            return False
+
+    def exportXLSX(
+        self,
+        mstruct: "MathStructure",
+        filename: str,
+        sheet_name: str = "Sheet1",
+    ) -> bool:
+        """Export a MathStructure (matrix/vector) to an Excel .xlsx file.
+
+        Mirrors exportCSV but uses openpyxl for .xlsx files.
+        Requires: pip install pyqalculate[xlsx]
+
+        Args:
+            mstruct: The MathStructure to export (matrix, vector, or number).
+            filename: Output .xlsx file path.
+            sheet_name: Name of the worksheet. Default: "Sheet1".
+
+        Returns:
+            True on success, False on failure.
+        """
+        try:
+            import openpyxl
+        except ImportError:
+            return False
+
+        try:
+            wb = openpyxl.Workbook()
+            ws = wb.active
+            ws.title = sheet_name
+
+            def _cell_value(val: "MathStructure") -> int | float | str:
+                """Convert a MathStructure to an openpyxl-compatible cell value."""
+                s = str(val)
+                try:
+                    return int(s)
+                except ValueError:
+                    pass
+                try:
+                    return float(s)
+                except ValueError:
+                    return s
+
+            if mstruct.is_matrix():
+                for row in mstruct:
+                    if row.is_vector():
+                        ws.append([_cell_value(c) for c in row])
+                    else:
+                        ws.append([_cell_value(row)])
+            elif mstruct.is_vector():
+                for elem in mstruct:
+                    ws.append([_cell_value(elem)])
+            else:
+                ws.append([_cell_value(mstruct)])
+
+            wb.save(filename)
+            return True
+        except (OSError, PermissionError):
             return False
 
     def __repr__(self) -> str:

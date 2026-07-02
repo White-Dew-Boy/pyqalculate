@@ -32,6 +32,12 @@ msgstr "导入 CSV..."
 msgid "Export CSV..."
 msgstr "导出 CSV..."
 
+msgid "Import XLSX..."
+msgstr "导入 XLSX..."
+
+msgid "Export XLSX..."
+msgstr "导出 XLSX..."
+
 msgid "Exit"
 msgstr "退出"
 
@@ -436,6 +442,50 @@ msgstr "导出失败"
 
 msgid "Could not write the CSV file."
 msgstr "无法写入 CSV 文件。"
+
+# ==================== import_xlsx_dialog.py ====================
+msgid "Import XLSX"
+msgstr "导入 XLSX"
+
+msgid "Sheet:"
+msgstr "工作表:"
+
+msgid "Select Excel File"
+msgstr "选择 Excel 文件"
+
+msgid "Excel files"
+msgstr "Excel 文件"
+
+msgid "Please select an Excel file."
+msgstr "请选择一个 Excel 文件。"
+
+msgid "Could not import the Excel file. Check the file path and format."
+msgstr "无法导入 Excel 文件。请检查文件路径和格式。"
+
+msgid "Missing Dependency"
+msgstr "缺少依赖"
+
+msgid "The openpyxl library is required for Excel import.\n\nInstall it with:\npip install openpyxl"
+msgstr "导入 Excel 需要 openpyxl 库。\n\n请使用以下命令安装：\npip install openpyxl"
+
+# ==================== export_xlsx_dialog.py ====================
+msgid "Export XLSX"
+msgstr "导出 XLSX"
+
+msgid "Sheet name:"
+msgstr "工作表名称:"
+
+msgid "Save XLSX File"
+msgstr "保存 XLSX 文件"
+
+msgid "Could not write the XLSX file."
+msgstr "无法写入 XLSX 文件。"
+
+msgid "The openpyxl library is required for Excel export.\n\nInstall it with:\npip install openpyxl"
+msgstr "导出 Excel 需要 openpyxl 库。\n\n请使用以下命令安装：\npip install openpyxl"
+
+msgid "Data exported to {}"
+msgstr "数据已导出到 {}"
 
 # ==================== conversion_view.py ====================
 msgid "Categories"

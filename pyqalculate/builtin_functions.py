@@ -301,6 +301,10 @@ FUNCTION_ID_IS_SUBSET = 1196
 FUNCTION_ID_GEO_DISTANCE = 2700
 FUNCTION_ID_LATEX = 2705
 
+# Signal Processing
+FUNCTION_ID_FFT = 2800
+FUNCTION_ID_IFFT = 2801
+
 
 # ============================================================================
 # Helper utilities
@@ -323,6 +327,8 @@ def _num(val) -> "Number":
     from pyqalculate.number import Number
     if isinstance(val, Number):
         return val
+    if isinstance(val, complex):
+        return Number.complex(val.real, val.imag)
     return Number(val)
 
 
@@ -430,6 +436,32 @@ def _extract_float_list(m: "MathStructure") -> list[float]:
     return []
 
 
+def _extract_complex_list(m: "MathStructure") -> list[complex]:
+    """Extract list of complex values from a vector of NUMBER or Addition-tree (real+imag*i) children."""
+    import math
+    from pyqalculate.types import StructureType
+    result: list[complex] = []
+    children = list(m) if m.is_vector() else [m]
+    for c in children:
+        if c.is_number():
+            result.append(complex(_float_val(c), 0))
+        elif c.type == StructureType.ADDITION and len(c) == 2:
+            real_child = c[0]
+            mult_child = c[1]
+            if (real_child.is_number() and
+                mult_child.type == StructureType.MULTIPLICATION and
+                len(mult_child) == 2 and
+                mult_child[1].is_symbolic() and mult_child[1].symbol == "i"):
+                real_val = _float_val(real_child)
+                imag_val = _float_val(mult_child[0])
+                result.append(complex(real_val, imag_val))
+            else:
+                continue
+        else:
+            continue
+    return result
+
+
 def _ndarray_to_mstruct(arr) -> "MathStructure":
     """Convert numpy array to MathStructure."""
     from pyqalculate.math_structure import MathStructure
@@ -440,6 +472,33 @@ def _ndarray_to_mstruct(arr) -> "MathStructure":
         for row in arr:
             rows.append(MathStructure.vector(*[MathStructure(float(x)) for x in row]))
         return MathStructure.matrix(rows)
+    return _undef()
+
+
+def _ndarray_to_mstruct_complex(arr) -> "MathStructure":
+    """Convert complex numpy array to MathStructure.
+
+    For 1D arrays, each element becomes:
+    - If imag part is ~0 (abs < 1e-15): plain real MathStructure
+    - Otherwise: Addition(real, Multiplication(imag, Symbol('i')))
+
+    For 2D+ arrays: returns undefined.
+    """
+    import numpy as np
+    from pyqalculate.math_structure import MathStructure
+    from pyqalculate.number import Number
+
+    if arr.ndim == 1:
+        elements: list[MathStructure] = []
+        for val in arr:
+            if abs(val.imag) < 1e-15:
+                elements.append(MathStructure.from_number(Number.from_float(val.real)))
+            else:
+                real_part = MathStructure.from_number(Number.from_float(val.real))
+                imag_part = MathStructure.from_number(Number.from_float(val.imag))
+                imag_i = MathStructure.multiplication(imag_part, MathStructure.from_symbol("i"))
+                elements.append(MathStructure.addition(real_part, imag_i))
+        return MathStructure.vector(*elements)
     return _undef()
 
 
@@ -911,8 +970,10 @@ class CisFunction(MathFunction):
     def calculate(self, vargs, eo=None):
         if _is_num(vargs[0]):
             val = _float_val(vargs[0])
-            return _ms(_num(complex(math.cos(val), math.sin(val))))
-        return _undef()
+            from pyqalculate.math_structure import MathStructure
+            from pyqalculate.number import Number
+            return MathStructure.from_number(Number.complex(math.cos(val), math.sin(val)))
+        return _try_sympy("cis", vargs) or _undef()
     def copy(self): return CisFunction()
 
 
@@ -1388,10 +1449,14 @@ class ArgFunction(MathFunction):
         self.set_argument_definition(0, NumberArgument("z"))
     def id(self) -> int: return FUNCTION_ID_ARG
     def calculate(self, vargs, eo=None):
+        if _is_num(vargs[0]) and vargs[0].number.is_complex():
+            real = vargs[0].number.real_part().to_float()
+            imag = vargs[0].number.imaginary_part().to_float()
+            return _ms(_num(math.atan2(imag, real)))
         if _is_num(vargs[0]):
             val = _float_val(vargs[0])
             return _ms(_num(math.atan2(0, val)))
-        return _undef()
+        return _try_sympy("arg", vargs) or _undef()
     def copy(self): return ArgFunction()
 
 
@@ -3584,6 +3649,65 @@ class PlotFunction(MathFunction):
 
 
 # ============================================================================
+# Signal Processing Functions
+# ============================================================================
+
+
+class FftFunction(MathFunction):
+    def __init__(self):
+        super().__init__("fft", 1, 1, "Signal Processing", "Fast Fourier Transform")
+        self.set_argument_definition(0, VectorArgument("signal"))
+
+    def id(self) -> int:
+        return FUNCTION_ID_FFT
+
+    def calculate(self, vargs, eo=None):
+        import numpy as np
+        import math
+        try:
+            vals = _extract_complex_list(vargs[0])
+            if not vals:
+                return _undef()
+            if any(math.isnan(v.real) or math.isnan(v.imag) or math.isinf(v.real) or math.isinf(v.imag) for v in vals):
+                return _undef()
+            result = np.fft.fft(vals)
+            return _ndarray_to_mstruct_complex(result)
+        except Exception:
+            return _undef()
+
+    def copy(self):
+        return FftFunction()
+
+
+class IfftFunction(MathFunction):
+    """Inverse Fast Fourier Transform: ifft(vector)."""
+
+    def __init__(self):
+        super().__init__("ifft", 1, 1, "Signal Processing", "Inverse Fast Fourier Transform")
+        self.set_argument_definition(0, VectorArgument("signal"))
+
+    def id(self) -> int:
+        return FUNCTION_ID_IFFT
+
+    def calculate(self, vargs, eo=None):
+        import numpy as np
+        import math
+        try:
+            vals = _extract_complex_list(vargs[0])
+            if not vals:
+                return _undef()
+            if any(math.isnan(v.real) or math.isnan(v.imag) or math.isinf(v.real) or math.isinf(v.imag) for v in vals):
+                return _undef()
+            result = np.fft.ifft(vals)
+            return _ndarray_to_mstruct_complex(result)
+        except Exception:
+            return _undef()
+
+    def copy(self):
+        return IfftFunction()
+
+
+# ============================================================================
 # FunctionRegistry
 # ============================================================================
 
@@ -3813,5 +3937,9 @@ def get_default_registry() -> FunctionRegistry:
         _default_registry.register(OddFunction())
         _default_registry.register(EvenFunction())
         _default_registry.register(PlotFunction())
+
+        # Signal Processing
+        _default_registry.register(FftFunction())
+        _default_registry.register(IfftFunction())
 
     return _default_registry

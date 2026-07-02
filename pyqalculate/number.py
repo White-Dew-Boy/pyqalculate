@@ -139,6 +139,11 @@ class Number:
                     self._float_lower = _mpfr(value)
                     self._type = NumberType.FLOAT
                     self._is_approx = True
+            elif isinstance(value, complex):
+                r = Number(value.real)
+                i = Number(value.imag)
+                self.set(r)
+                self.set_imaginary_part(i)
             elif isinstance(value, str):
                 self.set(value)
             elif isinstance(value, Number):
@@ -450,6 +455,15 @@ class Number:
 
     def to_string(self, base: int = 10) -> str:
         """Convert to string representation."""
+        if self.is_complex():
+            r = self.real_part()
+            i = self.imaginary_part()
+            i_val = i.to_float()
+            r_str = r.to_string(base=base)
+            i_str = i.to_string(base=base)
+            if i_val < 0:
+                return f"{r_str}{i_str}i"
+            return f"{r_str}+{i_str}i"
         if self._type == NumberType.PLUS_INFINITY:
             return "inf"
         if self._type == NumberType.MINUS_INFINITY:

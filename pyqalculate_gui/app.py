@@ -21,8 +21,10 @@ from pyqalculate_gui.event_bus import (
     COPY_RESULT,
     EXPRESSION_SUBMITTED,
     EXPORT_CSV,
+    EXPORT_XLSX,
     HISTORY_RECALLED,
     IMPORT_CSV,
+    IMPORT_XLSX,
     MODE_CHANGED,
     OPEN_HELP_DOC,
     OPEN_HISTORY_WINDOW,
@@ -233,6 +235,8 @@ class App:
         bus.subscribe(RESULT_DISPLAYED, self._on_result_displayed)
         bus.subscribe(IMPORT_CSV, self._on_import_csv)
         bus.subscribe(EXPORT_CSV, self._on_export_csv)
+        bus.subscribe(IMPORT_XLSX, self._on_import_xlsx)
+        bus.subscribe(EXPORT_XLSX, self._on_export_xlsx)
         bus.subscribe(OPEN_HELP_DOC, self._on_open_help_doc)
         bus.subscribe(OPEN_UNIT_CONVERSION, lambda: self._on_open_unit_conversion())
         bus.subscribe(OPEN_HISTORY_WINDOW, lambda: self._on_open_history_window())
@@ -367,6 +371,25 @@ class App:
         from pyqalculate_gui.export_csv_dialog import ExportCsvDialog
 
         ExportCsvDialog(
+            self._root,
+            theme=self._theme,
+            calculator=self._calculator,
+            get_last_result=self._result_view.get_last_result,
+        ).show()
+
+    def _on_import_xlsx(self) -> None:
+        """Show the import XLSX dialog."""
+        from pyqalculate_gui.import_xlsx_dialog import ImportXlsxDialog
+
+        ImportXlsxDialog(
+            self._root, theme=self._theme, calculator=self._calculator,
+        ).show()
+
+    def _on_export_xlsx(self) -> None:
+        """Show the export XLSX dialog."""
+        from pyqalculate_gui.export_xlsx_dialog import ExportXlsxDialog
+
+        ExportXlsxDialog(
             self._root,
             theme=self._theme,
             calculator=self._calculator,

@@ -192,6 +192,31 @@ calc.exportCSV(mstruct, filename, delimiter=",")
 
 ---
 
+## 6.5a XLSX 导入/导出
+
+### importXLSX
+
+```python
+mstruct = calc.importXLSX(filename, sheet=0, headers=True, first_row=1,
+                          to_matrix=False, name="")
+```
+
+导入 Excel `.xlsx` 文件。`sheet` 参数支持按索引（`0`）或名称（`"Sheet1"`）指定工作表。
+
+[来源: calculator.py:2470]
+
+### exportXLSX
+
+```python
+calc.exportXLSX(mstruct, filename, sheet_name="Sheet1")
+```
+
+导出 MathStructure 到 Excel `.xlsx` 文件。
+
+[来源: calculator.py:2617]
+
+---
+
 ## 6.6 类型系统
 
 ### EvaluationOptions — 评估选项
