@@ -112,7 +112,7 @@ pyqalculate/
 │   └── datasets.json       # 数据集定义
 ├── tests/                  # 38 个测试文件
 ├── scripts/                # 测试运行器、演示脚本
-├── start.bat               # Windows 启动器
+├── PyScicompTool.bat               # Windows 启动器
 └── docs/                   # 文档
 ```
 
@@ -124,4 +124,4 @@ pyqalculate/
 |--------|------|------|
 | CLI | `python -m pyqalc` 或 `pyqalc` | `pyproject.toml:47` |
 | GUI | `python -m pyqalculate_gui` | `pyqalculate_gui/__main__.py` |
-| 启动器 | `start.bat` | `start.bat` |
+| 启动器 | `PyScicompTool.bat` | `PyScicompTool.bat` |

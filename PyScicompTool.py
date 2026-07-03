@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """PyScicompTool — Launcher for PyQalculate (CLI / GUI / Tests / Demo).
-Replaces start.bat with a cross-platform Python equivalent.
-See start.bat for the original Windows-only implementation.
+Replaces PyScicompTool.bat with a cross-platform Python equivalent.
+See PyScicompTool.bat for the original Windows-only implementation.
 """
 
 from __future__ import annotations

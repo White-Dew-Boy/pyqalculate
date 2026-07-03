@@ -12,7 +12,7 @@
 python -m pyqalculate_gui
 
 # 通过启动器
-start.bat → 选择 [2]
+PyScicompTool.bat → 选择 [2]
 ```
 
 **Venv 完整性检查**: 如果安装被中断，启动时会自动重新创建虚拟环境。

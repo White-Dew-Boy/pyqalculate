@@ -12,7 +12,7 @@
 python -m pyqalc
 
 # 通过启动器
-start.bat → 选择 [1]
+PyScicompTool.bat → 选择 [1]
 ```
 
 [来源: pyqalc/__main__.py:3]

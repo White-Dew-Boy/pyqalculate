@@ -69,3 +69,4 @@ tests/output/
 
 # OpenCode agent working files
 .omo/
+*.deb

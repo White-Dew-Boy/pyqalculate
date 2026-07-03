@@ -486,7 +486,7 @@
 |------|------|
 | [01-overview.md](01-overview.md) | 项目概述、依赖、目录结构 |
 | [02-quickstart.md](02-quickstart.md) | 安装、启动方式、基本用法 |
-| [03-start-bat.md](03-start-bat.md) | start.bat 启动器 |
+| [03-start-bat.md](03-start-bat.md) | PyScicompTool.bat 启动器 |
 | [04-cli.md](04-cli.md) | CLI 命令、REPL 元命令、Tab 补全 |
 | [04a-expressions.md](04a-expressions.md) | 表达式语法、运算符优先级 |
 | [04b-functions.md](04b-functions.md) | 内置函数完整参考 |

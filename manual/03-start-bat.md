@@ -1,21 +1,21 @@
-# 第3章 启动器（start.bat / PyScicompTool.py）
+# 第3章 启动器（PyScicompTool.bat / PyScicompTool.py）
 
 > **验证状态**: ✅ 已验证  
-> **来源**: `start.bat`, `scripts/test_runner.py`, `scripts/demo.py`
+> **来源**: `PyScicompTool.bat`, `scripts/test_runner.py`, `scripts/demo.py`
 
 ---
 
-## 3.1 start.bat 概述
+## 3.1 PyScicompTool.bat 概述
 
 **适用平台**: Windows 专用
 
-`start.bat` 是 Windows 启动器，提供图形化菜单访问所有功能。位于项目根目录。[来源: start.bat:1]
+`PyScicompTool.bat` 是 Windows 启动器，提供图形化菜单访问所有功能。位于项目根目录。[来源: PyScicompTool.bat:1]
 
 ---
 
 ## 3.1a PyScicompTool.py 跨平台启动器
 
-`PyScicompTool.py` 是跨平台 Python 启动器（替代 Windows-only 的 `start.bat`），支持 Windows、Linux、macOS。
+`PyScicompTool.py` 是跨平台 Python 启动器（替代 Windows-only 的 `PyScicompTool.bat`），支持 Windows、Linux、macOS。
 位于项目根目录。[来源: PyScicompTool.py:1-5]
 
 **启动方式**:
@@ -33,8 +33,8 @@ python3 PyScicompTool.py
 5. 验证关键导入，损坏时自动 `--force-reinstall` [来源: PyScicompTool.py:84-101]
 6. 进入交互菜单
 
-**与 start.bat 的区别**:
-| 特性 | start.bat | PyScicompTool.py |
+**与 PyScicompTool.bat 的区别**:
+| 特性 | PyScicompTool.bat | PyScicompTool.py |
 |------|-----------|------------------|
 | 平台 | Windows 专用 | Windows / Linux / macOS |
 | 语言 | Batch | Python 3 |
@@ -57,17 +57,17 @@ python3 PyScicompTool.py
 ========================================
 ```
 
-[来源: start.bat:94-102]
+[来源: PyScicompTool.bat:94-102]
 
 ---
 
 ## 3.3 模式 1: CLI 模式
 
-**功能**: 启动命令行计算器 [来源: start.bat:117-124]
+**功能**: 启动命令行计算器 [来源: PyScicompTool.bat:117-124]
 
-**启动命令**: `%PY% scripts\cli.py` [来源: start.bat:122]
+**启动命令**: `%PY% scripts\cli.py` [来源: PyScicompTool.bat:122]
 
-**退出方式**: 输入 `quit` 或 `exit` [来源: start.bat:120]
+**退出方式**: 输入 `quit` 或 `exit` [来源: PyScicompTool.bat:120]
 
 **详细说明**: 见 [第4章 命令行界面](04-cli.md)
 
@@ -75,9 +75,9 @@ python3 PyScicompTool.py
 
 ## 3.4 模式 2: GUI 模式
 
-**功能**: 启动图形界面计算器 [来源: start.bat:126-131]
+**功能**: 启动图形界面计算器 [来源: PyScicompTool.bat:126-131]
 
-**启动命令**: `%PY% scripts\gui.py` [来源: start.bat:129]
+**启动命令**: `%PY% scripts\gui.py` [来源: PyScicompTool.bat:129]
 
 **详细说明**: 见 [第5章 图形界面](05-gui.md)
 
@@ -85,9 +85,9 @@ python3 PyScicompTool.py
 
 ## 3.5 模式 3: 测试模式
 
-**功能**: 运行所有测试套件 [来源: start.bat:133-137]
+**功能**: 运行所有测试套件 [来源: PyScicompTool.bat:133-137]
 
-**启动命令**: `%PY% scripts\test_runner.py` [来源: start.bat:135]
+**启动命令**: `%PY% scripts\test_runner.py` [来源: PyScicompTool.bat:135]
 
 ### 测试套件组成
 
@@ -174,9 +174,9 @@ Total expressions: 69
 
 ## 3.6 模式 4: 演示模式
 
-**功能**: 运行所有演示 [来源: start.bat:139-143]
+**功能**: 运行所有演示 [来源: PyScicompTool.bat:139-143]
 
-**启动命令**: `%PY% scripts\demo.py` [来源: start.bat:141]
+**启动命令**: `%PY% scripts\demo.py` [来源: PyScicompTool.bat:141]
 
 ### 演示命令列表
 
@@ -247,7 +247,7 @@ Errors: 0
 
 ## 3.7 环境检查
 
-启动器自动检查 [来源: start.bat:19-86]:
+启动器自动检查 [来源: PyScicompTool.bat:19-86]:
 
 1. **Python 检查**: 验证 Python 已安装
 2. **虚拟环境检查**: 检查 `.venv` 目录是否存在

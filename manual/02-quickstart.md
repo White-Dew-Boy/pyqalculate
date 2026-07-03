@@ -1,7 +1,7 @@
 # 第2章 快速开始
 
 > **验证状态**: ✅ 已验证  
-> **来源**: `README.md`, `start.bat`, `pyproject.toml`
+> **来源**: `README.md`, `PyScicompTool.bat`, `pyproject.toml`
 
 ---
 
@@ -9,10 +9,10 @@
 
 ### 方式一：使用启动器（推荐）
 
-双击 `start.bat`（Windows）或运行 `python3 PyScicompTool.py`（跨平台），选择菜单选项即可。启动器会自动：
-1. 检查 Python 是否安装 [来源: start.bat:19-29]
-2. 检查/创建虚拟环境 [来源: start.bat:34-86]
-3. 安装依赖 [来源: start.bat:55-61]
+双击 `PyScicompTool.bat`（Windows）或运行 `python3 PyScicompTool.py`（跨平台），选择菜单选项即可。启动器会自动：
+1. 检查 Python 是否安装 [来源: PyScicompTool.bat:19-29]
+2. 检查/创建虚拟环境 [来源: PyScicompTool.bat:34-86]
+3. 安装依赖 [来源: PyScicompTool.bat:55-61]
 
 ### 方式二：手动安装
 
@@ -41,7 +41,7 @@ pip install matplotlib sympy gmpy2
 
 ### 启动器菜单
 
-运行 `start.bat` 后显示菜单：
+运行 `PyScicompTool.bat` 后显示菜单：
 
 运行 `python3 PyScicompTool.py` 显示相同菜单（跨平台）。
 
@@ -57,15 +57,15 @@ pip install matplotlib sympy gmpy2
 ========================================
 ```
 
-[来源: start.bat:94-102]
+[来源: PyScicompTool.bat:94-102]
 
 | 选项 | 功能 | 来源 |
 |------|------|------|
-| 1 | 启动命令行计算器 | `start.bat:117-124` |
-| 2 | 启动图形界面计算器 | `start.bat:126-131` |
-| 3 | 运行所有测试套件 | `start.bat:133-137` |
-| 4 | 运行演示模式 | `start.bat:139-143` |
-| 0 | 退出 | `start.bat:151-157` |
+| 1 | 启动命令行计算器 | `PyScicompTool.bat:117-124` |
+| 2 | 启动图形界面计算器 | `PyScicompTool.bat:126-131` |
+| 3 | 运行所有测试套件 | `PyScicompTool.bat:133-137` |
+| 4 | 运行演示模式 | `PyScicompTool.bat:139-143` |
+| 0 | 退出 | `PyScicompTool.bat:151-157` |
 
 ---
 
@@ -135,7 +135,7 @@ result = calc.calculate_and_print("factor(x^2 - 4)")  # "(-2 + x) * (2 + x)"
 
 | 操作 | 预期结果 | 验证方式 |
 |------|----------|----------|
-| `start.bat` 启动 | 显示菜单 | 运行测试 |
+| `PyScicompTool.bat` 启动 | 显示菜单 | 运行测试 |
 | 选项 1 进入 CLI | 显示 `>` 提示符 | 运行测试 |
 | 选项 2 启动 GUI | 打开窗口 | 运行测试 |
 | 选项 3 运行测试 | 显示测试结果 | 运行测试 |

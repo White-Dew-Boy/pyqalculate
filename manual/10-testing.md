@@ -75,10 +75,10 @@
 ### 方式一：通过启动器
 
 ```
-start.bat → 选择 [3]
+PyScicompTool.bat → 选择 [3]
 ```
 
-[来源: start.bat:106-111]
+[来源: PyScicompTool.bat:106-111]
 
 ### 方式二：直接运行 pytest
 

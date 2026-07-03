@@ -773,7 +773,7 @@ ul ul, ol ol, ul ol, ol ul { margin: 2px 0; }
 │   └── planets.json        # 10 个太阳系天体
 ├── tests/                  # 39 个测试文件
 ├── scripts/                # 测试运行器、演示脚本
-├── start.bat               # Windows 启动器
+├── PyScicompTool.bat               # Windows 启动器
 └── docs/                   # 文档
 </code></pre>
 <hr />
@@ -799,8 +799,8 @@ ul ul, ol ol, ul ol, ol ul { margin: 2px 0; }
 </tr>
 <tr>
 <td>启动器</td>
-<td><code>start.bat</code></td>
-<td><code>start.bat</code></td>
+<td><code>PyScicompTool.bat</code></td>
+<td><code>PyScicompTool.bat</code></td>
 </tr>
 </tbody>
 </table>
@@ -813,16 +813,16 @@ ul ul, ol ol, ul ol, ol ul { margin: 2px 0; }
 
 <blockquote>
 <p><strong>验证状态</strong>: ✅ 已验证<br />
-<strong>来源</strong>: <code>README.md</code>, <code>start.bat</code>, <code>pyproject.toml</code></p>
+<strong>来源</strong>: <code>README.md</code>, <code>PyScicompTool.bat</code>, <code>pyproject.toml</code></p>
 </blockquote>
 <hr />
 <h2 id="ch2-21-安装">2.1 安装</h2>
 <h3 id="ch2-方式一使用启动器推荐">方式一：使用启动器（推荐）</h3>
-<p>双击 <code>start.bat</code>，选择菜单选项即可。启动器会自动：</p>
+<p>双击 <code>PyScicompTool.bat</code>，选择菜单选项即可。启动器会自动：</p>
 <ol>
-<li>检查 Python 是否安装 [来源: start.bat:16-25]</li>
-<li>检查/创建虚拟环境 [来源: start.bat:31-60]</li>
-<li>安装依赖 [来源: start.bat:44-53]</li>
+<li>检查 Python 是否安装 [来源: PyScicompTool.bat:16-25]</li>
+<li>检查/创建虚拟环境 [来源: PyScicompTool.bat:31-60]</li>
+<li>安装依赖 [来源: PyScicompTool.bat:44-53]</li>
 </ol>
 <h3 id="ch2-方式二手动安装">方式二：手动安装</h3>
 <pre><code class="language-bash"># 创建虚拟环境
@@ -844,7 +844,7 @@ pip install matplotlib sympy gmpy2
 <hr />
 <h2 id="ch2-22-启动方式">2.2 启动方式</h2>
 <h3 id="ch2-启动器菜单">启动器菜单</h3>
-<p>运行 <code>start.bat</code> 后显示菜单：</p>
+<p>运行 <code>PyScicompTool.bat</code> 后显示菜单：</p>
 <pre><code>========================================
           Main Menu
 ========================================
@@ -855,7 +855,7 @@ pip install matplotlib sympy gmpy2
   [0] Exit
 ========================================
 </code></pre>
-<p>[来源: start.bat:64-73]</p>
+<p>[来源: PyScicompTool.bat:64-73]</p>
 <table>
 <thead>
 <tr>
@@ -868,27 +868,27 @@ pip install matplotlib sympy gmpy2
 <tr>
 <td>1</td>
 <td>启动命令行计算器</td>
-<td><code>start.bat:88-96</code></td>
+<td><code>PyScicompTool.bat:88-96</code></td>
 </tr>
 <tr>
 <td>2</td>
 <td>启动图形界面计算器</td>
-<td><code>start.bat:98-104</code></td>
+<td><code>PyScicompTool.bat:98-104</code></td>
 </tr>
 <tr>
 <td>3</td>
 <td>运行所有测试套件</td>
-<td><code>start.bat:106-111</code></td>
+<td><code>PyScicompTool.bat:106-111</code></td>
 </tr>
 <tr>
 <td>4</td>
 <td>运行演示模式</td>
-<td><code>start.bat:113-118</code></td>
+<td><code>PyScicompTool.bat:113-118</code></td>
 </tr>
 <tr>
 <td>0</td>
 <td>退出</td>
-<td><code>start.bat:120-126</code></td>
+<td><code>PyScicompTool.bat:120-126</code></td>
 </tr>
 </tbody>
 </table>
@@ -952,7 +952,7 @@ result = calc.calculate_and_print(&quot;factor(x^2 - 4)&quot;)  # &quot;(-2 + x)
 </thead>
 <tbody>
 <tr>
-<td><code>start.bat</code> 启动</td>
+<td><code>PyScicompTool.bat</code> 启动</td>
 <td>显示菜单</td>
 <td>运行测试</td>
 </tr>
@@ -981,11 +981,11 @@ result = calc.calculate_and_print(&quot;factor(x^2 - 4)&quot;)  # &quot;(-2 + x)
 
 <blockquote>
 <p><strong>验证状态</strong>: ✅ 已验证<br />
-<strong>来源</strong>: <code>start.bat</code>, <code>scripts/test_runner.py</code>, <code>scripts/demo.py</code></p>
+<strong>来源</strong>: <code>PyScicompTool.bat</code>, <code>scripts/test_runner.py</code>, <code>scripts/demo.py</code></p>
 </blockquote>
 <hr />
 <h2 id="ch2-31-启动器概述">3.1 启动器概述</h2>
-<p><code>start.bat</code> 是 Windows 启动器，提供图形化菜单访问所有功能。位于项目根目录。[来源: start.bat:1]</p>
+<p><code>PyScicompTool.bat</code> 是 Windows 启动器，提供图形化菜单访问所有功能。位于项目根目录。[来源: PyScicompTool.bat:1]</p>
 <hr />
 <h2 id="ch2-32-菜单选项">3.2 菜单选项</h2>
 <pre><code>========================================
@@ -998,22 +998,22 @@ result = calc.calculate_and_print(&quot;factor(x^2 - 4)&quot;)  # &quot;(-2 + x)
   [0] Exit
 ========================================
 </code></pre>
-<p>[来源: start.bat:64-73]</p>
+<p>[来源: PyScicompTool.bat:64-73]</p>
 <hr />
 <h2 id="ch2-33-模式-1-cli-模式">3.3 模式 1: CLI 模式</h2>
-<p><strong>功能</strong>: 启动命令行计算器 [来源: start.bat:88-96]</p>
-<p><strong>启动命令</strong>: <code>python scripts\cli.py</code> [来源: start.bat:93]</p>
-<p><strong>退出方式</strong>: 输入 <code>quit</code> 或 <code>exit</code> [来源: start.bat:91]</p>
+<p><strong>功能</strong>: 启动命令行计算器 [来源: PyScicompTool.bat:88-96]</p>
+<p><strong>启动命令</strong>: <code>python scripts\cli.py</code> [来源: PyScicompTool.bat:93]</p>
+<p><strong>退出方式</strong>: 输入 <code>quit</code> 或 <code>exit</code> [来源: PyScicompTool.bat:91]</p>
 <p><strong>详细说明</strong>: 见 <a href="#ch3">第4章 命令行界面</a></p>
 <hr />
 <h2 id="ch2-34-模式-2-gui-模式">3.4 模式 2: GUI 模式</h2>
-<p><strong>功能</strong>: 启动图形界面计算器 [来源: start.bat:98-104]</p>
-<p><strong>启动命令</strong>: <code>python scripts\gui.py</code> [来源: start.bat:101]</p>
+<p><strong>功能</strong>: 启动图形界面计算器 [来源: PyScicompTool.bat:98-104]</p>
+<p><strong>启动命令</strong>: <code>python scripts\gui.py</code> [来源: PyScicompTool.bat:101]</p>
 <p><strong>详细说明</strong>: 见 <a href="#ch8">第5章 图形界面</a></p>
 <hr />
 <h2 id="ch2-35-模式-3-测试模式">3.5 模式 3: 测试模式</h2>
-<p><strong>功能</strong>: 运行所有测试套件 [来源: start.bat:106-111]</p>
-<p><strong>启动命令</strong>: <code>python scripts\test_runner.py</code> [来源: start.bat:108]</p>
+<p><strong>功能</strong>: 运行所有测试套件 [来源: PyScicompTool.bat:106-111]</p>
+<p><strong>启动命令</strong>: <code>python scripts\test_runner.py</code> [来源: PyScicompTool.bat:108]</p>
 <h3 id="ch2-测试套件组成">测试套件组成</h3>
 <p>测试运行器执行三类测试 [来源: scripts/test_runner.py:78-100]:</p>
 <table>
@@ -1104,8 +1104,8 @@ Total expressions: 69
 <p>[来源: test_runner.py:102-118]</p>
 <hr />
 <h2 id="ch2-36-模式-4-演示模式">3.6 模式 4: 演示模式</h2>
-<p><strong>功能</strong>: 运行所有演示 [来源: start.bat:113-118]</p>
-<p><strong>启动命令</strong>: <code>python scripts\demo.py</code> [来源: start.bat:115]</p>
+<p><strong>功能</strong>: 运行所有演示 [来源: PyScicompTool.bat:113-118]</p>
+<p><strong>启动命令</strong>: <code>python scripts\demo.py</code> [来源: PyScicompTool.bat:115]</p>
 <h3 id="ch2-演示命令列表">演示命令列表</h3>
 <p>演示从 <code>scripts/demo_commands.txt</code> 读取命令 [来源: scripts/demo.py:41]</p>
 <p><strong>命令类别</strong>:</p>
@@ -1245,7 +1245,7 @@ Errors: 0
 </ul>
 <hr />
 <h2 id="ch2-37-环境检查">3.7 环境检查</h2>
-<p>启动器自动检查 [来源: start.bat:14-60]:</p>
+<p>启动器自动检查 [来源: PyScicompTool.bat:14-60]:</p>
 <ol>
 <li><strong>Python 检查</strong>: 验证 Python 已安装</li>
 <li><strong>虚拟环境检查</strong>: 检查 <code>.venv</code> 目录是否存在</li>
@@ -1292,7 +1292,7 @@ Errors: 0
 python -m pyqalc
 
 # 通过启动器
-start.bat → 选择 [1]
+PyScicompTool.bat → 选择 [1]
 </code></pre>
 <p>[来源: pyqalc/<strong>main</strong>.py:3]</p>
 <hr />
@@ -6550,7 +6550,7 @@ Special commands:
 python -m pyqalculate_gui
 
 # 通过启动器
-start.bat → 选择 [2]
+PyScicompTool.bat → 选择 [2]
 </code></pre>
 <p><strong>Venv 完整性检查</strong>: 如果安装被中断，启动时会自动重新创建虚拟环境。</p>
 <p>[来源: pyqalculate_gui/<strong>main</strong>.py:2]</p>
@@ -8056,9 +8056,9 @@ plotter.plot_implicit(&quot;x^2/4 + y^2 - 1&quot;, filename=&quot;ellipse.png&qu
 <hr />
 <h2 id="ch11-103-运行测试">10.3 运行测试</h2>
 <h3 id="ch11-方式一通过启动器">方式一：通过启动器</h3>
-<pre><code>start.bat → 选择 [3]
+<pre><code>PyScicompTool.bat → 选择 [3]
 </code></pre>
-<p>[来源: start.bat:106-111]</p>
+<p>[来源: PyScicompTool.bat:106-111]</p>
 <h3 id="ch11-方式二直接运行-pytest">方式二：直接运行 pytest</h3>
 <pre><code class="language-bash"># 运行所有测试
 pytest tests/ -v
@@ -10187,7 +10187,7 @@ def test_trig_function(calc):
 </tr>
 <tr>
 <td><a href="#ch2">03-start-bat.md</a></td>
-<td>start.bat 启动器</td>
+<td>PyScicompTool.bat 启动器</td>
 </tr>
 <tr>
 <td><a href="#ch3">04-cli.md</a></td>

@@ -13,7 +13,7 @@ PyQalculate 是 [libqalculate](https://github.com/Qalculate/libqalculate) 的纯
 |------|------|------|
 | 1 | [项目概述](01-overview.md) | 功能特性、依赖、目录结构 |
 | 2 | [快速开始](02-quickstart.md) | 安装、启动方式、基本用法 |
-| 3 | [启动器](03-start-bat.md) | start.bat（Windows）与 PyScicompTool.py（跨平台）启动方式 |
+| 3 | [启动器](03-start-bat.md) | PyScicompTool.bat（Windows）与 PyScicompTool.py（跨平台）启动方式 |
 | 4 | [命令行界面 (CLI)](04-cli.md) | 命令参数、REPL 元命令、Tab 补全 |
 | 4a | [表达式语法](04a-expressions.md) | 运算符优先级、所有语法模式 |
 | 4b | [内置函数](04b-functions.md) | 159 函数分类、参数、示例 |
@@ -48,9 +48,9 @@ result = calc.calculate_and_print("5 ft to m")  # "1.524 m"
 
 ```bash
 # 启动器（推荐）
-start.bat
+PyScicompTool.bat
 
-# 跨平台启动器（推荐，替代 start.bat）
+# 跨平台启动器（推荐，替代 PyScicompTool.bat）
 python3 PyScicompTool.py
 
 # CLI 模式

@@ -240,13 +240,13 @@ PyQalculate Demo: basics.txt
 # =============================================================================
 
 >> plot(sin(x), sin_curve.png)
-  -> saved sin_curve.png (61098 bytes)
+  -> saved sin_curve.png (68252 bytes)
 
 >> plot(x^2 - 4, parabola.png)
-  -> saved parabola.png (43659 bytes)
+  -> saved parabola.png (48338 bytes)
 
 >> plot(exp(-x^2/2)/sqrt(2*pi), gaussian.png)
-  -> saved gaussian.png (45327 bytes)
+  -> saved gaussian.png (48452 bytes)
 
 # =============================================================================
 # 9. Parametric Plots
