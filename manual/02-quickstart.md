@@ -9,7 +9,7 @@
 
 ### 方式一：使用启动器（推荐）
 
-双击 `start.bat`，选择菜单选项即可。启动器会自动：
+双击 `start.bat`（Windows）或运行 `python3 PyScicompTool.py`（跨平台），选择菜单选项即可。启动器会自动：
 1. 检查 Python 是否安装 [来源: start.bat:19-29]
 2. 检查/创建虚拟环境 [来源: start.bat:34-86]
 3. 安装依赖 [来源: start.bat:55-61]
@@ -42,6 +42,8 @@ pip install matplotlib sympy gmpy2
 ### 启动器菜单
 
 运行 `start.bat` 后显示菜单：
+
+运行 `python3 PyScicompTool.py` 显示相同菜单（跨平台）。
 
 ```
 ========================================

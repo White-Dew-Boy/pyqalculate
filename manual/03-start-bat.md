@@ -1,13 +1,45 @@
-# 第3章 start.bat 启动器
+# 第3章 启动器（start.bat / PyScicompTool.py）
 
 > **验证状态**: ✅ 已验证  
 > **来源**: `start.bat`, `scripts/test_runner.py`, `scripts/demo.py`
 
 ---
 
-## 3.1 启动器概述
+## 3.1 start.bat 概述
+
+**适用平台**: Windows 专用
 
 `start.bat` 是 Windows 启动器，提供图形化菜单访问所有功能。位于项目根目录。[来源: start.bat:1]
+
+---
+
+## 3.1a PyScicompTool.py 跨平台启动器
+
+`PyScicompTool.py` 是跨平台 Python 启动器（替代 Windows-only 的 `start.bat`），支持 Windows、Linux、macOS。
+位于项目根目录。[来源: PyScicompTool.py:1-5]
+
+**启动方式**:
+
+```bash
+# Windows / Linux / macOS 通用
+python3 PyScicompTool.py
+```
+
+**自动流程**:
+1. 检查 Python >= 3.10 [来源: PyScicompTool.py:37-46]
+2. 检查/创建虚拟环境 `.venv` [来源: PyScicompTool.py:49-65]
+3. 安装核心依赖 (`pip install -e .`) [来源: PyScicompTool.py:68-81]
+4. 安全重装可选依赖 (`matplotlib sympy gmpy2`) [来源: PyScicompTool.py:79-81]
+5. 验证关键导入，损坏时自动 `--force-reinstall` [来源: PyScicompTool.py:84-101]
+6. 进入交互菜单
+
+**与 start.bat 的区别**:
+| 特性 | start.bat | PyScicompTool.py |
+|------|-----------|------------------|
+| 平台 | Windows 专用 | Windows / Linux / macOS |
+| 语言 | Batch | Python 3 |
+| 清屏 | `cls` | `os.system("clear"/"cls")` |
+| 暂停 | `pause` | `input("Press Enter...")` |
 
 ---
 
